@@ -1,0 +1,5 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     class="footer">
+    <jsp:output omit-xml-declaration="yes" />
+    <span>Footer</span>
+</div>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	<definition name="fullTemplate" template="/WEB-INF/templates/template.jspx">
+		<put-attribute name="header" value="/WEB-INF/templates/header.jspx" />
+		<put-attribute name="footer" value="/WEB-INF/templates/footer.jspx" />
+	</definition>
+	<definition name="contentOnlyTemplate" template="/WEB-INF/templates/contentOnly.jspx">
+	</definition>
+	<definition name="main" extends="fullTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/public/main.jspx"/>
+        <put-attribute name="rightContent" value="/WEB-INF/views/public/rightContent.jspx"/>
+    </definition>
+    <definition name="about" extends="fullTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/public/about.jspx"/>
+    </definition>
+    <definition name="contact" extends="fullTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/public/contact.jspx"/>
+    </definition>
+    <definition name="login" extends="fullTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/public/auth/login.jspx"/>
+    </definition>
+    <definition name="dashboard" extends="fullTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/secured/dashboard.jspx"/>
+    </definition>
+    
+</tiles-definitions>

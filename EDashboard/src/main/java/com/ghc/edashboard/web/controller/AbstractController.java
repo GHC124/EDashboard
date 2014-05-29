@@ -1,6 +1,7 @@
 package com.ghc.edashboard.web.controller;
 
 import java.beans.PropertyEditorSupport;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
@@ -17,9 +18,9 @@ import com.ghc.edashboard.web.GlobalVariables;
 
 public abstract class AbstractController {
 	@Autowired
-	protected MessageSource messageSource;
+	private MessageSource messageSource;
 	
-	protected String mDateFormatPattern;	
+	private String dateFormatPattern;	
 		
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -28,17 +29,29 @@ public abstract class AbstractController {
 
 	@PostConstruct
 	public void init() {
-		GlobalVariables.init(messageSource);
 		GlobalVariables globalVariables = GlobalVariables.getInstance();
-		mDateFormatPattern = globalVariables.getDateFormatPattern();		
+		globalVariables.init(messageSource);
+		dateFormatPattern = globalVariables.getDateFormatPattern();		
 	}
 
-	public class DateTimeEditor extends PropertyEditorSupport {
+	protected String getMessage(String code, Locale locale){
+		return messageSource.getMessage(code, null, locale);
+	}
+	
+	protected String getMessage(String code, Object[] args, Locale locale){
+		return messageSource.getMessage(code, args, locale);
+	}
+	
+	protected String getDateFormatPattern(){
+		return dateFormatPattern;
+	}
+		
+	private class DateTimeEditor extends PropertyEditorSupport {
 
 		@Override
 		public void setAsText(String text) throws IllegalArgumentException {
 			if (StringUtils.hasText(text)) {
-				DateTimeFormatter dtf = DateTimeFormat.forPattern(mDateFormatPattern);
+				DateTimeFormatter dtf = DateTimeFormat.forPattern(dateFormatPattern);
 				LocalDateTime jodatime = dtf.parseLocalDateTime(text);
 				setValue(jodatime);
 			} else {
@@ -50,7 +63,7 @@ public abstract class AbstractController {
 		public String getAsText() throws IllegalArgumentException {
 			String s = "";
 			if (getValue() != null) {
-				DateTimeFormatter dtfOut = DateTimeFormat.forPattern(mDateFormatPattern);
+				DateTimeFormatter dtfOut = DateTimeFormat.forPattern(dateFormatPattern);
 				s = dtfOut.print((LocalDateTime) getValue());
 			}
 			return s;

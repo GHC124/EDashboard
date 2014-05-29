@@ -1,0 +1,44 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:sec="http://www.springframework.org/security/tags"
+	class="header">
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:url value="/public/main" var="home" />
+	<spring:url value="/public/about" var="about" />
+	<spring:url value="/public/contact" var="contact" />
+	<div class="logo">
+		<span>EDashboard</span>
+	</div>
+	<div class="nav">
+		<sec:authorize access="isAnonymous()">
+			<ul>
+				<li><a href="${home}" class="nav-item nav-home"><spring:message code="nav.home"/></a></li>
+				<li><a href="${about}" class="nav-item nav-about"><spring:message code="nav.about"/></a></li>
+				<li><a href="${contact}" class="nav-item nav-contact"><spring:message code="nav.contact_us"/></a></li>
+			</ul>
+		</sec:authorize>
+		<sec:authorize access="isAuthenticated()">
+			
+		</sec:authorize>		
+	</div>
+	<spring:eval
+		expression="pageContext.request.getAttribute('javax.servlet.forward.request_uri').toString()"
+		var="currentUrl" />
+    <script type="text/javascript">
+    	$(function(){
+    		var currentUrl = '${currentUrl}';
+    		var nav = $(".nav");
+    		var items = nav.find(".nav-item"); 
+    		$(items).each(function(index, item){
+    			$(item).removeClass('active');
+    		});
+    		if(currentUrl.indexOf('main')>-1){
+    			nav.find(".nav-home").addClass("active");
+    		}else if(currentUrl.indexOf('about')>-1){
+    			nav.find(".nav-about").addClass("active");
+    		}else if(currentUrl.indexOf('contact')>-1){
+    			nav.find(".nav-contact").addClass("active");
+    		}  
+    	});
+    </script>
+</div>

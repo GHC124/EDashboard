@@ -17,17 +17,6 @@ public class GlobalVariables {
 		mDateFormatPattern = "";
 	}
 
-	/**
-	 * Init data
-	 */
-	public static void init(MessageSource messageSource) {
-		GlobalVariables globalVariables = getInstance();
-
-		// Load global variables
-		
-		globalVariables.mDateFormatPattern = messageSource.getMessage(
-				"date_format_pattern", new Object[] {}, Locale.US);	}
-
 	public static GlobalVariables getInstance() {
 		if (INSTANCE == null) {
 			synchronized (GlobalVariables.class) {
@@ -37,6 +26,14 @@ public class GlobalVariables {
 			}
 		}
 		return INSTANCE;
+	}
+
+	public void init(MessageSource messageSource) {
+		GlobalVariables globalVariables = getInstance();
+
+		// Load global variables
+		globalVariables.mDateFormatPattern = messageSource.getMessage(
+				"application.date_format_pattern", new Object[] {}, Locale.US);
 	}
 
 	public String getDateFormatPattern() {
