@@ -30,4 +30,5 @@
 			</div>
 		</c:if>
 	</sec:authorize>
+	<span>Dashboard</span>
 </div>

@@ -1,0 +1,17 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	>
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<spring:message code="label.logout" var="labelLogout"/> 
+    <spring:message code="label.login.welcome" var="labelWelcome"/>
+	<spring:url var="logoutUrl" value="/j_spring_security_logout" />
+	
+	<div class="block block-user">
+		${labelWelcome}  
+      	<sec:authentication property="principal.username" /> 
+       		| <a href="${logoutUrl}">${labelLogout}</a> 
+	</div>
+</div>

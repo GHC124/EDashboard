@@ -23,6 +23,7 @@
     </definition>
     <definition name="dashboard" extends="fullTemplate">
         <put-attribute name="content" value="/WEB-INF/views/secured/dashboard.jspx"/>
+        <put-attribute name="rightContent" value="/WEB-INF/views/secured/rightContent.jspx"/>
     </definition>
     
 </tiles-definitions>

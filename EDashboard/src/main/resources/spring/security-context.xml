@@ -17,7 +17,7 @@
 		<intercept-url pattern="/public/**" access="permitAll" />
 		<intercept-url pattern="/secured/admin/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/secured/**" access="authenticated"/>
-		<intercept-url pattern="/**" access="denyAll" />
+		
 		<logout logout-success-url="/public/main" invalidate-session="true"/>
 	</http>
 	<beans:bean id="customPasswordEncoder" class="com.ghc.edashboard.web.CustomPasswordEncoder"/>
@@ -25,7 +25,7 @@
 		<authentication-provider>
 <!-- 			<password-encoder ref="customPasswordEncoder"/> -->
 			<jdbc-user-service data-source-ref="dataSource" 
-				users-by-username-query="select username, password from users where username=?"
+				users-by-username-query="select username, password, is_active from users where username=?"
 				authorities-by-username-query="select username, authority from users where username=?" />			
 		</authentication-provider>
 	</authentication-manager>

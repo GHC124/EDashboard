@@ -6,19 +6,30 @@
 	<spring:url value="/public/main" var="home" />
 	<spring:url value="/public/about" var="about" />
 	<spring:url value="/public/contact" var="contact" />
+	<spring:url value="/secured/dashboard" var="dashboard" />
+	<spring:url value="/secured/content/profile" var="content_profile" />
+	<spring:url value="/secured/content/file" var="content_file" />
 	<div class="logo">
 		<span>EDashboard</span>
 	</div>
-	<div class="nav">
+	<div class="div-nav">
 		<sec:authorize access="isAnonymous()">
-			<ul>
+			<ul id="nav">
 				<li><a href="${home}" class="nav-item nav-home"><spring:message code="nav.home"/></a></li>
 				<li><a href="${about}" class="nav-item nav-about"><spring:message code="nav.about"/></a></li>
 				<li><a href="${contact}" class="nav-item nav-contact"><spring:message code="nav.contact_us"/></a></li>
 			</ul>
 		</sec:authorize>
 		<sec:authorize access="isAuthenticated()">
-			
+			<ul id="nav">
+				<li><a href="${dashboard}" class="nav-item nav-dashboard"><spring:message code="nav.dashboard"/></a></li>				
+				<li><a href="${profile}" class="nav-item nav-content"><spring:message code="nav.content"/></a>
+					<ul>
+						<li><a href="${content_profile}" class="nav-item"><spring:message code="nav.content.profile"/></a></li>
+						<li><a href="${content_file}" class="nav-item"><spring:message code="nav.content.file"/></a></li>
+					</ul>
+				</li>
+			</ul>
 		</sec:authorize>		
 	</div>
 	<spring:eval
@@ -27,7 +38,7 @@
     <script type="text/javascript">
     	$(function(){
     		var currentUrl = '${currentUrl}';
-    		var nav = $(".nav");
+    		var nav = $(".div-nav");
     		var items = nav.find(".nav-item"); 
     		$(items).each(function(index, item){
     			$(item).removeClass('active');
@@ -38,7 +49,11 @@
     			nav.find(".nav-about").addClass("active");
     		}else if(currentUrl.indexOf('contact')>-1){
     			nav.find(".nav-contact").addClass("active");
-    		}  
+    		}else if(currentUrl.indexOf('dashboard')>-1){
+    			nav.find(".nav-dashboard").addClass("active");
+    		}else if(currentUrl.indexOf('content')>-1){
+    			nav.find(".nav-content").addClass("active");
+    		}        
     	});
     </script>
 </div>
