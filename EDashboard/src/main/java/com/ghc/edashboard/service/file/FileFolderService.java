@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import com.ghc.edashboard.domain.FileFolder;
 
 public interface FileFolderService {
-	Page<FileFolder> findAllByUser(Pageable pageable, Integer userId);
+	Page<FileFolder> findAllByUser(Integer userId, Pageable pageable);
 }

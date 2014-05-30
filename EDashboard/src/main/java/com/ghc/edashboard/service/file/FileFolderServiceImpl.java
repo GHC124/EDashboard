@@ -7,20 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ghc.edashboard.domain.FileFolder;
-import com.ghc.edashboard.repository.file.FileFolderRepository;
+import com.ghc.edashboard.repository.file.JpaFileFolderRepository;
 
 @Service("fileFolderService")
 @Transactional
-public class FileFolderServiceImpl implements FileFolderService{
-	
+public class FileFolderServiceImpl implements FileFolderService {
+
 	@Autowired
-	private FileFolderRepository fileFolderRepository;
-	
-	@Transactional(readOnly=true)
+	private JpaFileFolderRepository fileFolderRepository;
+
+	@Transactional(readOnly = true)
 	@Override
-	public Page<FileFolder> findAllByUser(Pageable pageable, Integer userId) {
-		
-		return null;
+	public Page<FileFolder> findAllByUser(Integer userId, Pageable pageable) {
+		return fileFolderRepository.findAllByUser(userId, pageable);
 	}
 
 }
