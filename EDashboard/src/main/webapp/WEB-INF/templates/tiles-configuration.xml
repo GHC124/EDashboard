@@ -8,6 +8,7 @@
 	</definition>
 	<definition name="contentOnlyTemplate" template="/WEB-INF/templates/contentOnly.jspx">
 	</definition>
+	<!-- Public Pages -->
 	<definition name="main" extends="fullTemplate">
         <put-attribute name="content" value="/WEB-INF/views/public/main.jspx"/>
         <put-attribute name="rightContent" value="/WEB-INF/views/public/rightContent.jspx"/>
@@ -21,9 +22,17 @@
     <definition name="login" extends="fullTemplate">
         <put-attribute name="content" value="/WEB-INF/views/public/auth/login.jspx"/>
     </definition>
-    <definition name="dashboard" extends="fullTemplate">
-        <put-attribute name="content" value="/WEB-INF/views/secured/dashboard.jspx"/>
+    <!-- Secured Pages -->
+    <definition name="securedTemplate" extends="fullTemplate">        
         <put-attribute name="rightContent" value="/WEB-INF/views/secured/rightContent.jspx"/>
     </definition>
-    
+    <definition name="dashboard" extends="securedTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/secured/dashboard.jspx"/>        
+    </definition>
+    <definition name="profile" extends="securedTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/secured/content/profile.jspx"/>        
+    </definition>
+    <definition name="file" extends="securedTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/secured/content/file.jspx"/>        
+    </definition>
 </tiles-definitions>

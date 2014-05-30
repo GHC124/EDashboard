@@ -10,6 +10,7 @@ package com.ghc.edashboard.web.form;
  */
 public class Message {
 	public static final String ERROR = "error";
+	public static final String SUCCESS = "success";
 	
 	private String type;
 	private String message;

@@ -4,17 +4,31 @@ import java.lang.reflect.Constructor;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 
 /**
  * 
  */
 public class JpaUtil {
+	public static String[] getOrderbyAndSort(Pageable pageable){
+		String[] data = new String[2];		
+		Iterator<Order> i = pageable.getSort().iterator();
+		while (i.hasNext()) {
+			Order order = i.next();
+			data[0] = order.getProperty();
+			data[1] = order.getDirection().name();
+		}
+		return data;
+	}
+	
 	private static <T> T map(Class<T> type, Object[] tuple) {
 		List<Class<?>> tupleTypes = new ArrayList<>();
 		for (int i = 0; i < tuple.length; i++) {

@@ -1,52 +1,57 @@
-body{font-family: Arial, Helvetica, sans-serif;font-size: 13px;}
+body{font-family: Arial, Helvetica, sans-serif;font-size: 13px;margin: 0px;}
 table{width: 100%;}
 h1, h2, h3{color: #1E6297;}
+input{padding: 4px;}
 
 #wrap{margin: auto;width: 1024px;}
 #wrap div.left-content{width: 75%; float: left;}
-#wrap div.right-content{width: 25%; float: left;}
+#wrap div.right-content{width: 24%; float: left; margin-left: 5px;}
 
-.header{	
-}
-.header .logo{height: 50px;}
+.header{background: transparent url('images/bg-container.jpg') no-repeat top center;color: #FFFFFF;}
+.header .logo{height: 100px;}
+.header .logo span{margin: 35px 0px 0px 10px;float: left;}
 
 .content{display: inline-block;width: 100%;margin-top: 5px;}
 
 .footer{height: 50px; margin-top: 25px;}
 
-div.info,div.success,div.warning,div.error {border: 1px solid;margin: 10px 0px;padding: 15px 10px 15px 50px;background-repeat: no-repeat;background-position: 10px center;}
-div.info {color: #00529B;background-color: #BDE5F8;background-image: url('images/info.png');}
-div.success {color: #4F8A10;background-color: #DFF2BF;background-image: url('images/success.png');}
-div.warning {color: #9F6000;background-color: #FEEFB3;background-image: url('images/warning.png');}
-div.error {color: #D8000C;background-color: #FFBABA;background-image: url('images/error.png');}
-label.error{color: #D8000C;}
+div.message-info,div.message-success,div.message-warning,div.message-error {border: 1px solid;margin: 10px 0px;padding: 15px 10px 15px 50px;background-repeat: no-repeat;background-position: 10px center;}
+div.message-info {color: #00529B;background-color: #BDE5F8;background-image: url('images/info.png');}
+div.message-success {color: #4F8A10;background-color: #DFF2BF;background-image: url('images/success.png');}
+div.message-warning {color: #9F6000;background-color: #FEEFB3;background-image: url('images/warning.png');}
+div.message-error {color: #D8000C;background-color: #FFBABA;background-image: url('images/error.png');}
 
 .form-group{padding: 5px;}
 .control-label{float: left;}
 div.control-group {margin-bottom: 20px;}
-div.control-group label.control-label {width: 50px;}
-div.control-group div.controls {margin-left: 100px;}
+div.control-group label.control-label {width: 100px;margin-top: 5px;}
+div.control-group div.controls {margin-left: 120px;}
 div.control-group div.controls div.div-help-inline{margin-left: 5px;}
 div.controls span {color: red;font-size: 0.8em;}
 div.control-group .star{display: none;}
 div.require .star {color: red; display: inline;}
-.error{color: red;}
-.success{color: green;}
-span.success {color: #4F8A10;}
-span.error {color: #D8000C;}
+div.error .control-label{color: red; display: inline;}
 
 .block{background-color: #F4F7F9;border: solid 1px #D7DFE4;}
 .block-login input[type="text"], .block-login input[type="password"]{margin-left: 50px; padding: 4px;}
 .block-user{text-align: center;}
 
-ul#nav {border-bottom: solid 1px #CCC;color: #4F4F4F;width: 100%;height: 35px;color: white;font-size: 18px;overflow: hidden;clear: both;margin: 0px;padding: 0px;}
+.login input[type="text"], .login input[type="password"]{margin-left: 50px; padding: 4px;}
+.login label{margin-top: 8px;}
+
+.div-nav{border: 1px solid #A8A8A8;
+	background: #C4C4C4 -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.8)), to(rgba(255, 255, 255, 0)));
+	background: #C4C4C4 -moz-linear-gradient(top, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+	font-weight: bold;color: #4F4F4F;}
+ul#nav {border-bottom: solid 1px #CCC;color: #4F4F4F;width: 100%;height: 32px;color: white;font-size: 18px;overflow: hidden;clear: both;margin: 0px;padding: 0px;}
 ul#nav ul {width: 100%;float: left;list-style: none;margin: 0;padding: 0 0 0 0px;}
 ul#nav li{float: left;list-style: none;}
-ul#nav li a{color: black;display: block;font-weight: normal;margin: 0;padding: 6px 15px /**/5px 15px;text-decoration: none;position: relative;}
+ul#nav li a{color: black;display: block;font-weight: normal;margin: 0;padding: 6px 15px /**/4px 15px;text-decoration: none;position: relative;}
 ul#nav li a:hover, ul#nav li a:active{background: #487EC2;color: #FFFFFF;text-decoration:none;}
 ul#nav li a.active{background: #487EC2;color: #FFFFFF;text-decoration: none;}
 ul#nav li a .sf-sub-indicator {background: none;display: block;text-indent: -9999px;overflow: hidden;position: absolute;}
-ul#nav li li a, ul#nav li li a:link, ul#nav li li a:visited {background-color: #F4F7F9;color: #333333;font-size: 12px;width: 140px;margin: 0;padding: 2px 38px 5px 10px;border-left: 1px solid #BBBBBB;border-right: 1px solid #BBBBBB;border-bottom: 1px solid #BBBBBB;text-transform: none;position: relative;}
+ul#nav li li a, ul#nav li li a:link, ul#nav li li a:visited {background-color: #F4F7F9;color: #333333;font-size: 13px;width: 140px;margin: 0;padding: 8px 38px 8px 10px;
+	border-left: 1px solid #BBBBBB;border-right: 1px solid #BBBBBB;border-bottom: 1px solid #BBBBBB;text-transform: none;position: relative;}
 ul#nav li li a:hover, ul#nav li li a:active{background: #333333;color: #FFFFFF;text-decoration: none;}
 ul#nav li ul {z-index: 9999;position: absolute;left: -999em;height: auto;width: 190px;margin: 0 0 0 0px;padding: 0px 0px 0px 0px;}
 ul#nav li ul a{width: 170px;}
@@ -57,3 +62,7 @@ ul#nav li:hover ul, ul#nav li li:hover ul, ul#nav li li li:hover ul
 , ul#nav li.sfHover ul, ul#nav li li.sfHover ul, ul#nav li li li.sfHover ul{left: auto;}
 ul#nav li:hover, ul#nav li.sfHover{position: static;}
 div#sub-menu{height: 5px;width: 100%;}
+
+div.introduction{font-size: 11px;}
+
+div.profile input[type="text"]{width: 200px;}

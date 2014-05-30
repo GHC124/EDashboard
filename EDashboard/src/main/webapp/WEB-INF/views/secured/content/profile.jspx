@@ -1,0 +1,55 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:html="urn:jsptagdir:/WEB-INF/tags/html"
+	xmlns:ajax="urn:jsptagdir:/WEB-INF/tags/ajax"
+	class="profile">
+	<jsp:output omit-xml-declaration="yes" />
+
+	<h1>
+		<spring:message code="label.content.profile" />
+	</h1>
+	<div class="introduction">
+		<spring:message code="label.content.profile.introduction" />
+	</div>
+	<html:form formUrl="" modelAttribute="profile" method="POST" id="profileForm">
+		<form:hidden path="id"/>
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1"><spring:message
+							code="label.content.profile.about" /></a></li>
+				<li><a href="#tabs-2"><spring:message
+							code="label.content.profile.contact" /></a></li>
+			</ul>
+			<div id="tabs-1">
+				<spring:message code="label.content.profile.firstname" var="labelFirstName"/>
+				<spring:message code="label.content.profile.lastname" var="labelLastName"/>
+				<spring:message code="label.content.profile.introduction" var="labelIntroduction"/>
+				
+				<html:inputField label="${labelFirstName}" name="firstName" require="true"></html:inputField>
+				<html:inputField label="${labelLastName}" name="lastName" require="true"></html:inputField>
+				<html:areaField label="${labelIntroduction}" name="introduction"></html:areaField>				
+			</div>
+			<div id="tabs-2">
+				<spring:message code="label.content.profile.email" var="labelEmail"/>
+				
+				<html:inputField label="${labelEmail}" name="email" require="true"></html:inputField>
+			</div>
+		</div>
+		<button type="submit"><spring:message code="label.action.save"/></button>
+	</html:form>
+	<!-- CKEditor -->
+	<html:script url="/public/resources/ckeditor/ckeditor.js"></html:script>
+	<html:script url="/public/resources/ckeditor/adapters/jquery.js"></html:script>
+	<script type="text/javascript">
+		$(function() {
+			$("#tabs").tabs();
+			CKEDITOR.replace( 'introduction', {
+                toolbar : 'Basic',
+                uiColor : '#CCCCCC'
+            });
+		});
+	</script>
+</div>

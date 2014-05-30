@@ -39,8 +39,8 @@
 				<prop key="hibernate.show_sql">true</prop>
 			</props>
 		</property>
-	</bean>
-	<context:annotation-config />	
-	<jpa:repositories base-package="com.ghc.edashboard.repository"
+	</bean>	
+	<context:annotation-config/>
+	<jpa:repositories base-package="com.ghc.edashboard.repository" 
 		entity-manager-factory-ref="emf" transaction-manager-ref="transactionManager" />
 </beans>
