@@ -68,7 +68,7 @@ div#sub-menu{height: 5px;width: 100%;}
 div.introduction{font-size: 11px;}
 
 div.title-action{display: inline-block;width: 100%;}
-div.title-action .float-left{float:left;}
-div.title-action .float-right{float:right;}
+div.title-action .float-left{float:left; margin: 10px;}
+div.title-action .float-right{float:right; margin-top: 5px;}
 
 div.profile input[type="text"]{width: 200px;}

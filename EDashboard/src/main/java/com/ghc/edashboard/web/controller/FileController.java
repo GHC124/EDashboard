@@ -1,9 +1,13 @@
 package com.ghc.edashboard.web.controller;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ghc.edashboard.domain.File;
@@ -27,6 +33,7 @@ import com.ghc.edashboard.util.JpaUtil;
 import com.ghc.edashboard.web.form.DataGrid;
 import com.ghc.edashboard.web.form.ErrorMessage;
 import com.ghc.edashboard.web.form.ValidationResponse;
+import com.ghc.edashboard.web.util.UploadUtil;
 
 @Controller
 @RequestMapping(value = "/secured/content/file")
@@ -37,21 +44,70 @@ public class FileController extends AbstractController {
 
 	@Autowired
 	private FileService fileService;
-	
+
 	@RequestMapping
 	public ModelAndView file() {
 		ModelAndView modelAndView = new ModelAndView("file");
 
 		File file = new File();
+		file.setSize(0l);
+		file.setFolderId(0);
+		file.setDateUp(new LocalDateTime());
 		modelAndView.addObject("file", file);
-		
+
 		FileFolder fileFolder = new FileFolder();
 		fileFolder.setUserId(getUserId());
 		modelAndView.addObject("fileFolder", fileFolder);
-		
+
 		return modelAndView;
 	}
 
+	@RequestMapping(params = "createFile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ValidationResponse createFile(
+			@ModelAttribute(value = "file") @Valid File file,
+			BindingResult result, MultipartHttpServletRequest request,
+			Locale locale) {
+		ValidationResponse res = new ValidationResponse();
+		res.setStatus(ValidationResponse.FAIL);
+		if (result.hasErrors()) {
+			List<FieldError> allErrors = result.getFieldErrors();
+			for (FieldError objectError : allErrors) {
+				res.addErrorMessage(new ErrorMessage(objectError.getField(),
+						objectError.getDefaultMessage()));
+			}
+		} else {
+			// get the file from the request object
+			Iterator<String> itr = request.getFileNames();
+			if (!itr.hasNext()) {
+				res.addErrorMessage(new ErrorMessage("downloadUrl", getMessage(
+						"validation.NotEmpty", locale)));
+				return res;
+			}
+			MultipartFile mpf = request.getFile(itr.next());
+			try {
+				String originalName = mpf.getOriginalFilename();
+				long size = mpf.getSize();
+				if (UploadUtil.isValidFile(originalName)) {
+					String rootDirectory = getUploadRootDirectory();
+					String downloadUrl = UploadUtil.saveFile(rootDirectory,
+							originalName, mpf.getInputStream());
+					file.setDownloadUrl(downloadUrl);
+					file.setSize(size);
+					fileService.save(file);
+					res.setStatus(ValidationResponse.SUCCESS);
+				} else {
+					res.addErrorMessage(new ErrorMessage("downloadUrl",
+							getMessage("validation.InvalidType", locale)));
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return res;
+	}
+	
 	@RequestMapping(params = "createFolder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ValidationResponse createFolder(Model model,
@@ -69,13 +125,13 @@ public class FileController extends AbstractController {
 			// Reassign user id
 			fileFolder.setUserId(getUserId());
 			FileFolder saveEntity = fileFolderService.save(fileFolder);
-			res.setStatus(ValidationResponse.SUCCESS);			
+			res.setStatus(ValidationResponse.SUCCESS);
 			res.setExtraData(saveEntity.getId().toString());
 		}
 
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/folders", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DataGrid<FileFolder> getFolderList(
@@ -83,9 +139,11 @@ public class FileController extends AbstractController {
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
 			@RequestParam(value = "sord", required = false) String order) {
-		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy, order);
+		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
+				order);
 		Integer userId = getUserId();
-		Page<FileFolder> dataPage = fileFolderService.findAllByUser(userId,	pageRequest);
+		Page<FileFolder> dataPage = fileFolderService.findAllByUser(userId,
+				pageRequest);
 		DataGrid<FileFolder> dataGrid = new DataGrid<>();
 		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
 		dataGrid.setTotalPages(dataPage.getTotalPages());
@@ -94,7 +152,7 @@ public class FileController extends AbstractController {
 
 		return dataGrid;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DataGrid<File> getFileList(
@@ -103,8 +161,10 @@ public class FileController extends AbstractController {
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
 			@RequestParam(value = "sord", required = false) String order) {
-		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy, order);
-		Page<File> dataPage = fileService.findAllByFolder(folderId, pageRequest);
+		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
+				order);
+		Page<File> dataPage = fileService
+				.findAllByFolder(folderId, pageRequest);
 		DataGrid<File> dataGrid = new DataGrid<>();
 		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
 		dataGrid.setTotalPages(dataPage.getTotalPages());

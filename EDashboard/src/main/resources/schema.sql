@@ -41,6 +41,7 @@ CREATE TABLE `edashboard`.`file` (
   `size` BIGINT NOT NULL,
   `dateup` DATETIME NOT NULL,
   `description` TEXT NULL,
+  `download_url` VARCHAR(1000) NULL, 
   `folder_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `file_folder_fk_idx` (`folder_id` ASC),

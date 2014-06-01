@@ -22,7 +22,8 @@ public abstract class AbstractController {
 	@Autowired
 	private MessageSource messageSource;
 	
-	private String dateFormatPattern;	
+	private String dateFormatPattern;
+	private String uploadRootDirectory;
 		
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -34,6 +35,7 @@ public abstract class AbstractController {
 		GlobalVariables globalVariables = GlobalVariables.getInstance();
 		globalVariables.init(messageSource);
 		dateFormatPattern = globalVariables.getDateFormatPattern();		
+		uploadRootDirectory = globalVariables.getUploadRootDirectory();
 	}
 
 	protected String getMessage(String code, Locale locale){
@@ -46,8 +48,12 @@ public abstract class AbstractController {
 	
 	protected String getDateFormatPattern(){
 		return dateFormatPattern;
-	}
+	}	
 	
+	protected String getUploadRootDirectory() {
+		return uploadRootDirectory;
+	}
+
 	protected Integer getUserId(){
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
 				.getContext().getAuthentication().getPrincipal();

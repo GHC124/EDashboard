@@ -21,4 +21,9 @@ public class FileServiceImpl implements FileService {
 	public Page<File> findAllByFolder(Integer folderId, Pageable pageable) {
 		return fileRepository.findAllByFolder(folderId, pageable);
 	}
+
+	@Override
+	public File save(File file) {
+		return fileRepository.save(file);
+	}
 }

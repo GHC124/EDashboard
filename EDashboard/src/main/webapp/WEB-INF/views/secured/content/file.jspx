@@ -14,6 +14,9 @@
 	<spring:message code="label.content.file.name" var="labelFileName"/>
 	<spring:message code="label.content.file.new" var="labelFileNew"/>
 	<spring:message code="label.content.file.description" var="labelFileDescription"/>
+	<spring:message code="label.content.file.size" var="labelFileSize"/>
+	<spring:message code="label.content.file.date_up" var="labelFileDateUp"/>
+	<spring:message code="label.content.file.upload" var="labelFileDownloadUrl"/>
 	<spring:message code="label.action.save" var="labelActionSave"/>
 	<spring:message code="label.action.close" var="labelActionClose"/>
 	<spring:message code="message.save.fail" var="messageSaveFail"/>
@@ -53,13 +56,34 @@
     	</html:form>    	
 	</div>
 	<div>
-		<h3>
-			<spring:message code="label.content.file" />
-		</h3>
+		<div class="title-action">
+			<h3 class="float-left">
+				<spring:message code="label.content.file" />
+			</h3>
+			<div class="float-right">
+				<span id="spanNewFile" class="success" style="display: none;">
+					<spring:message code="message.save.success"/>
+				</span>
+				<button type="button" id="btnNewFile" onclick="showNewFileDialog();" disabled="disabled">
+					<spring:message code="label.action.add" />
+				</button>
+			</div>			
+		</div>
 		<div> 
 	    	<table id="listFile"><tr><td></td></tr></table> 
 	    	<span id="pagerFile"></span> 
 	    </div> 
+	</div>
+	<div id="newFileDialog" title="${labelFileNew}" class="dialog add-dialog file-dialog" style="display: none">
+    	<span id="newFileError" class="error" style="display: none">${messageSaveFail}</span>
+    	<html:uploadForm formUrl="${showFileUrl}" modelAttribute="file" id="fileNewForm" method="POST">
+    		<html:inputField label="${labelFileName}" name="name" require="true"/>
+    		<html:inputField label="${labelFileDescription}" name="description"/>     		
+    		<html:fileField label="${labelFileDownloadUrl}" name="downloadUrl"/>
+    		<form:hidden path="size" />
+    		<form:hidden path="dateUp" />
+    		<form:hidden path="folderId" />    		    		    		
+    	</html:uploadForm> 	
 	</div>
 	<script type="text/javascript">
     	<![CDATA[
@@ -90,11 +114,13 @@
 			    viewrecords: true, 
 			    gridview: true, 
 			    height: 150, 
-			    width: 600, 
+			    width: 700, 
 			    beforeRequest: function(){
+			    	disableInput($('#btnNewFile'));
 			    	//clearJQGridData($('#listFile'), {page : 1});
 		        },
 			    onSelectRow: function(id){  
+			    	enableInput($('#btnNewFile'));
 			    	refreshJQGrid('#listFile', { page: 1, postData: {folderId:id}, datatype: "json" });
 			    },
 			    loadComplete: function() {			    	
@@ -104,10 +130,12 @@
 				  url:'${showFileUrl}', 
 				  datatype: 'local', 
 				  mtype: 'GET', 
-				  colNames:['${labelFileName}', '${labelFileDescription}'], 
+				  colNames:['${labelFileName}', '${labelFileDescription}', '${labelFileSize}', '${labelFileDateUp}'], 
 				  colModel :[  
 				    {name:'name', index:'name', width:150},
-				    {name:'description', index:'description', sortable:false, width:150}
+				    {name:'description', index:'description', sortable:false, width:150},
+				    {name:'sizeString', index:'size', width:50},
+				    {name:'dateUpString', index:'dateUp', width:50}
 				  ], 
 				  jsonReader : { 
 				      root:"data", 
@@ -125,7 +153,7 @@
 				  viewrecords: true, 
 				  gridview: true, 
 				  height: 250, 
-				  width: 600, 
+				  width: 700, 
 				  onSelectRow: function(id){  
 				      //document.location.href ="${showFolderUrl}/" + id; 
 				  },
@@ -153,12 +181,45 @@
 			        		'${labelActionClose}':function(){
 			        			$("#newFolderDialog").dialog("close");	
 			        		}  
-			          },
-			          close: function(){
-			        	  
+			          }
+		        });
+				$( "#newFileDialog" ).dialog({
+			          autoOpen: false,
+			          height: 330,
+			          width: 420,
+			          modal: true,
+			          resizable: false,
+			          buttons:{
+			        		'${labelActionSave}':function(){
+			        			var folder = $(this).data('folderId');
+			        			var replaceData = {folderId: folder};
+			        			fileAjaxSubmit('#fileNewForm', '${showFileUrl}?createFile', function(){
+				            		refreshJQGrid("#listFile", {page : 1});
+				            		fadeInAndOut($('#spanNewFile'), 1000, 10000);
+				            		$("#newFileDialog").dialog("close");	
+				            	}, null, null, function(){
+				            		var error = $("#newFileDialog").find("#newFileError");
+				            		error.css({"display": "block"});
+				            		error.html('${messageSaveFail}');
+				            	}, replaceData);	       
+			        		},
+			        		'${labelActionClose}':function(){
+			        			$("#newFileDialog").dialog("close");	
+			        		}  
 			          }
 		        });
     		});
+	    	function showNewFileDialog(){
+	    		var folderId = getJQGridSelectedRow($('#listFolder'));;
+	    		if(folderId){
+	    			removeInputError('#fileNewForm');
+			    	var dialog = $("#newFileDialog");
+			    	dialog.find("#newFileError").css({"display": "none"});
+			    	dialog.data('folderId',folderId).dialog("open");	
+	    		}else{
+	    			log('NULL folder id!');
+	    		}	    				        
+		    }
 	    	function showNewFolderDialog(){	  
 	    		removeInputError('#folderNewForm');
 		    	var dialog = $("#newFolderDialog");

@@ -26,6 +26,7 @@ public class File {
 	private Long size;
 	private LocalDateTime dateUp;
 	private String description;
+	private String downloadUrl;
 	private Integer folderId;
 
 	@Id
@@ -78,6 +79,15 @@ public class File {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}	
+
+	@Column(name="download_url")
+	public String getDownloadUrl() {
+		return downloadUrl;
+	}
+
+	public void setDownloadUrl(String downloadUrl) {
+		this.downloadUrl = downloadUrl;
 	}
 
 	@NotNull(message = "{validation.NotNull}")
@@ -91,19 +101,19 @@ public class File {
 	}
 
 	@javax.persistence.Transient
-	public String getReleaseDateString() {
-		String releaseDateString = "";
+	public String getDateUpString() {
+		String dateUpString = "";
 		if (dateUp != null) {
 			String dateFormatPattern = GlobalVariables.getInstance().getDateFormatPattern();
 			DateTimeFormatter dtfOut = DateTimeFormat.forPattern(dateFormatPattern);
-			releaseDateString = dtfOut.print(dateUp);
+			dateUpString = dtfOut.print(dateUp);
 			
 		}
-		return releaseDateString;
+		return dateUpString;
 	}
 
 	@javax.persistence.Transient
-	public String getAppSizeString() {
+	public String getSizeString() {
 		String sizeString = "";
 		if (size != null) {
 			sizeString = UploadUtil.getFileSize(size);

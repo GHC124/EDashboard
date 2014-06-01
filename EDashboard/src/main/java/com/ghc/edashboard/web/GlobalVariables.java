@@ -11,10 +11,11 @@ import org.springframework.context.MessageSource;
 public class GlobalVariables {
 	private static GlobalVariables INSTANCE;
 
-	private String mDateFormatPattern;
-
+	private String dateFormatPattern;
+	private String uploadRootDirectory;
+	
 	private GlobalVariables() {
-		mDateFormatPattern = "";
+		dateFormatPattern = "";
 	}
 
 	public static GlobalVariables getInstance() {
@@ -32,11 +33,17 @@ public class GlobalVariables {
 		GlobalVariables globalVariables = getInstance();
 
 		// Load global variables
-		globalVariables.mDateFormatPattern = messageSource.getMessage(
+		globalVariables.dateFormatPattern = messageSource.getMessage(
 				"application.date_format_pattern", new Object[] {}, Locale.US);
+		globalVariables.uploadRootDirectory = messageSource.getMessage(
+				"application.upload_root_directory", new Object[] {}, Locale.US);
 	}
 
 	public String getDateFormatPattern() {
-		return mDateFormatPattern;
+		return dateFormatPattern;
+	}
+
+	public String getUploadRootDirectory() {
+		return uploadRootDirectory;
 	}
 }

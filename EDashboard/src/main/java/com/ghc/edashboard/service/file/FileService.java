@@ -7,4 +7,5 @@ import com.ghc.edashboard.domain.File;
 
 public interface FileService {
 	Page<File> findAllByFolder(Integer folderId, Pageable pageable);
+	File save(File file);
 }
