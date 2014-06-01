@@ -10,11 +10,13 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import com.ghc.edashboard.web.GlobalVariables;
+import com.ghc.edashboard.web.auth.CustomUserDetails;
 
 public abstract class AbstractController {
 	@Autowired
@@ -44,6 +46,12 @@ public abstract class AbstractController {
 	
 	protected String getDateFormatPattern(){
 		return dateFormatPattern;
+	}
+	
+	protected Integer getUserId(){
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+		return userDetails.getUserId();
 	}
 		
 	private class DateTimeEditor extends PropertyEditorSupport {

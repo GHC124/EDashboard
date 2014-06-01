@@ -5,7 +5,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ghc.edashboard.domain.Profile;
-import com.ghc.edashboard.service.ProfileService;
-import com.ghc.edashboard.web.auth.CustomUserDetails;
+import com.ghc.edashboard.service.profile.ProfileService;
 import com.ghc.edashboard.web.form.Message;
 
 @Controller
@@ -29,10 +27,9 @@ public class ProfileController extends AbstractController {
 	public ModelAndView profile() {
 		ModelAndView modelAndView = new ModelAndView("profile");
 
-		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
-				.getContext().getAuthentication().getPrincipal();
+		Integer userId = getUserId();
 
-		Profile profile = profileService.findById(userDetails.getUserId());
+		Profile profile = profileService.findById(userId);
 		modelAndView.addObject(profile);
 
 		return modelAndView;

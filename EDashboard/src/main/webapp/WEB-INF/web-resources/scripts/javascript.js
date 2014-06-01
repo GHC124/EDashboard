@@ -233,6 +233,29 @@ function enableInputs(formName, type){
 	}
 }
 
+function fadeIn(control, duration, callback){
+	if(callback){
+		$(control).fadeIn(duration, callback);
+	}else{
+		$(control).fadeIn(duration);
+	}
+}
+
+function fadeOut(control, duration, callback){
+	if(callback){
+		$(control).fadeOut(duration, callback);
+	}else{
+		$(control).fadeOut(duration);
+	}
+}
+
+function fadeInAndOut(control, durationIn, durationOut){
+	//$(control).show();
+	fadeIn(control, durationIn, function(){
+		fadeOut(control, durationOut);
+	});
+}
+
 /* JQGrid*/
 function refreshJQGrid(listId, data){
 	if(data){

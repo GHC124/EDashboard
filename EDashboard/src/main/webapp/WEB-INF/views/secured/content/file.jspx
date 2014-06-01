@@ -8,8 +8,163 @@
 	class="file">
 	<jsp:output omit-xml-declaration="yes" />
 	
+	<spring:message code="label.content.file.folder.new" var="labelFolderNew"/>
+	<spring:message code="label.content.file.folder.name" var="labelFolderName"/>
+	<spring:message code="label.content.file.folder.description" var="labelFolderDescription"/>
+	<spring:message code="label.content.file.name" var="labelFileName"/>
+	<spring:message code="label.content.file.new" var="labelFileNew"/>
+	<spring:message code="label.content.file.description" var="labelFileDescription"/>
+	<spring:message code="label.action.save" var="labelActionSave"/>
+	<spring:message code="label.action.close" var="labelActionClose"/>
+	<spring:message code="message.save.fail" var="messageSaveFail"/>
+	<spring:url value="/secured/content/file" var="showFileUrl"/>	
+	
 	<h1>
 		<spring:message code="label.content.file" />
 	</h1>
-	
+	<div class="introduction">
+		<spring:message code="label.content.file.introduction"/>
+	</div>
+	<div>
+		<div class="title-action">
+			<h3 class="float-left">
+				<spring:message code="label.content.file.folder" />
+			</h3>
+			<div class="float-right">
+				<span id="spanNewFolder" class="success" style="display: none;">
+					<spring:message code="message.save.success"/>
+				</span>
+				<button type="button" onclick="showNewFolderDialog();">
+					<spring:message code="label.action.add" />
+				</button>
+			</div>			
+		</div>
+		<div> 
+	    	<table id="listFolder"><tr><td></td></tr></table> 
+	    	<span id="pagerFolder"></span> 
+	    </div> 
+	</div>
+	<div id="newFolderDialog" title="${labelFolderNew}" class="dialog add-dialog folder-dialog" style="display: none">
+    	<span id="newFolderError" class="error" style="display: none">${messageSaveFail}</span>
+    	<html:form formUrl="${showFileUrl}" modelAttribute="fileFolder" id="folderNewForm" method="POST">
+    		<html:inputField label="${labelFolderName}" name="name" require="true"/>
+    		<html:inputField label="${labelFolderDescription}" name="description"/>     		
+    		<form:hidden path="userId" />    		    		
+    	</html:form>    	
+	</div>
+	<div>
+		<h3>
+			<spring:message code="label.content.file" />
+		</h3>
+		<div> 
+	    	<table id="listFile"><tr><td></td></tr></table> 
+	    	<span id="pagerFile"></span> 
+	    </div> 
+	</div>
+	<script type="text/javascript">
+    	<![CDATA[
+    	var refreshUserList = false;
+    	$(function(){       
+	    	$("#listFolder").jqGrid({ 
+			    url:'${showFileUrl}/folders', 
+			    datatype: 'json', 
+			    mtype: 'GET', 
+			    colNames:['${labelFolderName}', '${labelFolderDescription}'], 
+			    colModel :[  
+			      {name:'name', index:'name', width:150},
+			      {name:'description', index:'description', sortable:false, width:150}
+			    ], 
+			    jsonReader : { 
+			        root:"data", 
+			        page: "currentPage", 
+			        total: "totalPages", 
+			        records: "totalRecords", 
+			        repeatitems: false, 
+			        id: "id" 
+			    },       
+			    pager: '#pagerFolder', 
+			    rowNum:5, 
+			    rowList:[5,10,20,30,50], 
+			    sortname: 'name', 
+			    sortorder: 'asc', 
+			    viewrecords: true, 
+			    gridview: true, 
+			    height: 150, 
+			    width: 600, 
+			    beforeRequest: function(){
+			    	//clearJQGridData($('#listFile'), {page : 1});
+		        },
+			    onSelectRow: function(id){  
+			    	refreshJQGrid('#listFile', { page: 1, postData: {folderId:id}, datatype: "json" });
+			    },
+			    loadComplete: function() {			    	
+			    }
+			  });	    	
+				$("#listFile").jqGrid({ 
+				  url:'${showFileUrl}', 
+				  datatype: 'local', 
+				  mtype: 'GET', 
+				  colNames:['${labelFileName}', '${labelFileDescription}'], 
+				  colModel :[  
+				    {name:'name', index:'name', width:150},
+				    {name:'description', index:'description', sortable:false, width:150}
+				  ], 
+				  jsonReader : { 
+				      root:"data", 
+				      page: "currentPage", 
+				      total: "totalPages", 
+				      records: "totalRecords", 
+				      repeatitems: false, 
+				      id: "id" 
+				  },       
+				  pager: '#pagerFile', 
+				  rowNum:5, 
+				  rowList:[5,10,20,30,50], 
+				  sortname: 'name', 
+				  sortorder: 'asc', 
+				  viewrecords: true, 
+				  gridview: true, 
+				  height: 250, 
+				  width: 600, 
+				  onSelectRow: function(id){  
+				      //document.location.href ="${showFolderUrl}/" + id; 
+				  },
+				  loadComplete: function() {			    	
+				  }
+				});
+				$( "#newFolderDialog" ).dialog({
+			          autoOpen: false,
+			          height: 280,
+			          width: 350,
+			          modal: true,
+			          resizable: false,
+			          buttons:{
+			        		'${labelActionSave}':function(){
+			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}?createFolder', function(){
+				            		refreshJQGrid("#listFolder", {page : 1});
+				            		fadeInAndOut($('#spanNewFolder'), 1000, 10000);
+				            		$("#newFolderDialog").dialog("close");	
+				            	}, null, null, function(){
+				            		var error = $("#newFolderDialog").find("#newFolderError");
+				            		error.css({"display": "block"});
+				            		error.html('${messageSaveFail}');
+				            	}, null);	       
+			        		},
+			        		'${labelActionClose}':function(){
+			        			$("#newFolderDialog").dialog("close");	
+			        		}  
+			          },
+			          close: function(){
+			        	  
+			          }
+		        });
+    		});
+	    	function showNewFolderDialog(){	  
+	    		removeInputError('#folderNewForm');
+		    	var dialog = $("#newFolderDialog");
+		    	dialog.find("#newFolderError").css({"display": "none"});
+		        dialog.dialog("open");		        
+		    }	 
+    	]]>
+        </script>
 </div>

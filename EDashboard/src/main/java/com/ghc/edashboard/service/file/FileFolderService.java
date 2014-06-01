@@ -7,4 +7,6 @@ import com.ghc.edashboard.domain.FileFolder;
 
 public interface FileFolderService {
 	Page<FileFolder> findAllByUser(Integer userId, Pageable pageable);
+
+	FileFolder save(FileFolder fileFolder);
 }

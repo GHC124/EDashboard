@@ -11,13 +11,35 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
 /**
  * 
  */
 public class JpaUtil {
+	
+	public static PageRequest getPageRequest(Integer page, Integer rows, String sortBy, String order){
+		Sort sort = null;
+		String orderBy = sortBy;
+		if (orderBy != null && order != null) {
+			if (order.equals("desc")) {
+				sort = new Sort(Sort.Direction.DESC, orderBy);
+			} else {
+				sort = new Sort(Sort.Direction.ASC, orderBy);
+			}
+		}
+		PageRequest pageRequest = null;
+		if (sort != null) {
+			pageRequest = new PageRequest(page - 1, rows, sort);
+		} else {
+			pageRequest = new PageRequest(page - 1, rows);
+		}
+		return pageRequest;
+	}
+	
 	public static String[] getOrderbyAndSort(Pageable pageable){
 		String[] data = new String[2];		
 		Iterator<Order> i = pageable.getSort().iterator();

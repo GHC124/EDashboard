@@ -22,4 +22,9 @@ public class FileFolderServiceImpl implements FileFolderService {
 		return fileFolderRepository.findAllByUser(userId, pageable);
 	}
 
+	@Override
+	public FileFolder save(FileFolder fileFolder) {
+		return fileFolderRepository.save(fileFolder);
+	}
+
 }
