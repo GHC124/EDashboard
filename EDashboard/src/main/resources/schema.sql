@@ -22,31 +22,36 @@ CREATE TABLE `edashboard`.`profile` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
     
-CREATE TABLE `edashboard`.`file_folder` (
+CREATE TABLE `edashboard`.`folder` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `description` VARCHAR(255) NULL,
   `user_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `file_folder_user_idx` (`user_id` ASC),
-  CONSTRAINT `file_folder_user`
+  INDEX `folder_user_idx` (`user_id` ASC),
+  CONSTRAINT `folder_user`
     FOREIGN KEY (`user_id`)
     REFERENCES `edashboard`.`user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-CREATE TABLE `edashboard`.`file` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `size` BIGINT NOT NULL,
-  `dateup` DATETIME NOT NULL,
-  `description` TEXT NULL,
-  `download_url` VARCHAR(1000) NULL, 
-  `folder_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `file_folder_fk_idx` (`folder_id` ASC),
-  CONSTRAINT `file_folder_fk`
-    FOREIGN KEY (`folder_id`)
-    REFERENCES `edashboard`.`file_folder` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+CREATE TABLE `file` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `size` bigint(20) NOT NULL,
+  `dateup` datetime NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `download_url` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+    
+CREATE TABLE `file_folder` (
+  `file_id` int(10) unsigned NOT NULL,
+  `folder_id` int(10) unsigned NOT NULL,
+  KEY `folder_fk` (`folder_id`),
+  KEY `file_fk` (`file_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+ALTER TABLE `file_folder`
+  ADD CONSTRAINT `file_folder_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `file_folder_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
+ 

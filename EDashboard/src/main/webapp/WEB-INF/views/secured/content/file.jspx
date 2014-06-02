@@ -81,8 +81,7 @@
     		<html:inputField label="${labelFileDescription}" name="description"/>     		
     		<html:fileField label="${labelFileDownloadUrl}" name="downloadUrl"/>
     		<form:hidden path="size" />
-    		<form:hidden path="dateUp" />
-    		<form:hidden path="folderId" />    		    		    		
+    		<form:hidden path="dateUp" />    		    		    		
     	</html:uploadForm> 	
 	</div>
 	<script type="text/javascript">

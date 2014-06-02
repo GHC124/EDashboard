@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2014 at 05:18 PM
+-- Generation Time: Jun 02, 2014 at 04:48 PM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -33,20 +33,19 @@ CREATE TABLE IF NOT EXISTS `file` (
   `dateup` datetime NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `download_url` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `folder_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `file_folder_fk_idx` (`folder_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `file`
 --
 
-INSERT INTO `file` (`id`, `name`, `size`, `dateup`, `description`, `download_url`, `folder_id`) VALUES
-(1, 'text', 500, '2014-06-01 00:00:00', 'text description', NULL, 1),
-(2, 'ebook', 700, '2014-06-01 00:00:00', 'ebook description', NULL, 2),
-(3, 'Avatar', 11147, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635143402.jpg', 6),
-(4, 'Avatar1', 5953, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635565295.jpg', 5);
+INSERT INTO `file` (`id`, `name`, `size`, `dateup`, `description`, `download_url`) VALUES
+(1, 'text', 500, '2014-06-01 00:00:00', 'text description', NULL),
+(2, 'ebook', 700, '2014-06-01 00:00:00', 'ebook description', NULL),
+(3, 'Avatar', 11147, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635143402.jpg'),
+(4, 'Avatar1', 5953, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635565295.jpg'),
+(5, 'Avatar2', 11147, '2014-06-02 00:00:00', '', '2014\\5\\file_1401715199598.jpg');
 
 -- --------------------------------------------------------
 
@@ -55,6 +54,29 @@ INSERT INTO `file` (`id`, `name`, `size`, `dateup`, `description`, `download_url
 --
 
 CREATE TABLE IF NOT EXISTS `file_folder` (
+  `file_id` int(10) unsigned NOT NULL,
+  `folder_id` int(10) unsigned NOT NULL,
+  KEY `folder_fk` (`folder_id`),
+  KEY `file_fk` (`file_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `file_folder`
+--
+
+INSERT INTO `file_folder` (`file_id`, `folder_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 1),
+(3, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `folder`
+--
+
+CREATE TABLE IF NOT EXISTS `folder` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -64,10 +86,10 @@ CREATE TABLE IF NOT EXISTS `file_folder` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
 
 --
--- Dumping data for table `file_folder`
+-- Dumping data for table `folder`
 --
 
-INSERT INTO `file_folder` (`id`, `name`, `description`, `user_id`) VALUES
+INSERT INTO `folder` (`id`, `name`, `description`, `user_id`) VALUES
 (1, 'Public', 'public folder', 1),
 (2, 'Private', 'private folder', 1),
 (3, 'Public', 'public fodler', 2),
@@ -132,15 +154,16 @@ INSERT INTO `user` (`id`, `username`, `password`, `authority`, `is_active`) VALU
 --
 
 --
--- Constraints for table `file`
---
-ALTER TABLE `file`
-  ADD CONSTRAINT `file_folder_fk` FOREIGN KEY (`folder_id`) REFERENCES `file_folder` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
 -- Constraints for table `file_folder`
 --
 ALTER TABLE `file_folder`
+  ADD CONSTRAINT `file_folder_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `file_folder_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `folder`
+--
+ALTER TABLE `folder`
   ADD CONSTRAINT `file_folder_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --

@@ -26,9 +26,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ghc.edashboard.domain.File;
-import com.ghc.edashboard.domain.FileFolder;
-import com.ghc.edashboard.service.file.FileFolderService;
+import com.ghc.edashboard.domain.Folder;
 import com.ghc.edashboard.service.file.FileService;
+import com.ghc.edashboard.service.file.FolderService;
 import com.ghc.edashboard.util.JpaUtil;
 import com.ghc.edashboard.web.form.DataGrid;
 import com.ghc.edashboard.web.form.ErrorMessage;
@@ -40,7 +40,7 @@ import com.ghc.edashboard.web.util.UploadUtil;
 public class FileController extends AbstractController {
 
 	@Autowired
-	private FileFolderService fileFolderService;
+	private FolderService folderService;
 
 	@Autowired
 	private FileService fileService;
@@ -51,11 +51,10 @@ public class FileController extends AbstractController {
 
 		File file = new File();
 		file.setSize(0l);
-		file.setFolderId(0);
 		file.setDateUp(new LocalDateTime());
 		modelAndView.addObject("file", file);
 
-		FileFolder fileFolder = new FileFolder();
+		Folder fileFolder = new Folder();
 		fileFolder.setUserId(getUserId());
 		modelAndView.addObject("fileFolder", fileFolder);
 
@@ -111,7 +110,7 @@ public class FileController extends AbstractController {
 	@RequestMapping(params = "createFolder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ValidationResponse createFolder(Model model,
-			@ModelAttribute(value = "fileFolder") @Valid FileFolder fileFolder,
+			@ModelAttribute(value = "fileFolder") @Valid Folder fileFolder,
 			BindingResult result) {
 		ValidationResponse res = new ValidationResponse();
 		if (result.hasErrors()) {
@@ -124,7 +123,7 @@ public class FileController extends AbstractController {
 		} else {
 			// Reassign user id
 			fileFolder.setUserId(getUserId());
-			FileFolder saveEntity = fileFolderService.save(fileFolder);
+			Folder saveEntity = folderService.save(fileFolder);
 			res.setStatus(ValidationResponse.SUCCESS);
 			res.setExtraData(saveEntity.getId().toString());
 		}
@@ -134,7 +133,7 @@ public class FileController extends AbstractController {
 
 	@RequestMapping(value = "/folders", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public DataGrid<FileFolder> getFolderList(
+	public DataGrid<Folder> getFolderList(
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
@@ -142,9 +141,9 @@ public class FileController extends AbstractController {
 		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
 				order);
 		Integer userId = getUserId();
-		Page<FileFolder> dataPage = fileFolderService.findAllByUser(userId,
+		Page<Folder> dataPage = folderService.findAllByUser(userId,
 				pageRequest);
-		DataGrid<FileFolder> dataGrid = new DataGrid<>();
+		DataGrid<Folder> dataGrid = new DataGrid<>();
 		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
 		dataGrid.setTotalPages(dataPage.getTotalPages());
 		dataGrid.setTotalRecords(dataPage.getTotalElements());
@@ -161,16 +160,7 @@ public class FileController extends AbstractController {
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
 			@RequestParam(value = "sord", required = false) String order) {
-		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
-				order);
-		Page<File> dataPage = fileService
-				.findAllByFolder(folderId, pageRequest);
-		DataGrid<File> dataGrid = new DataGrid<>();
-		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
-		dataGrid.setTotalPages(dataPage.getTotalPages());
-		dataGrid.setTotalRecords(dataPage.getTotalElements());
-		dataGrid.setData(dataPage.getContent());
-
-		return dataGrid;
+		
+		return null;
 	}
 }

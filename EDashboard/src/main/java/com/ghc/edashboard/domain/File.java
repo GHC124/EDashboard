@@ -27,7 +27,6 @@ public class File {
 	private LocalDateTime dateUp;
 	private String description;
 	private String downloadUrl;
-	private Integer folderId;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,16 +87,6 @@ public class File {
 
 	public void setDownloadUrl(String downloadUrl) {
 		this.downloadUrl = downloadUrl;
-	}
-
-	@NotNull(message = "{validation.NotNull}")
-	@Column(name = "folder_id")
-	public Integer getFolderId() {
-		return folderId;
-	}
-
-	public void setFolderId(Integer folderId) {
-		this.folderId = folderId;
 	}
 
 	@javax.persistence.Transient

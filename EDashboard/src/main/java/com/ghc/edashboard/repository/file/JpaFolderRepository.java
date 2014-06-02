@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.ghc.edashboard.domain.FileFolder;
+import com.ghc.edashboard.domain.Folder;
 
-public interface JpaFileFolderRepository extends
-		PagingAndSortingRepository<FileFolder, Integer> {
+public interface JpaFolderRepository extends
+		PagingAndSortingRepository<Folder, Integer> {
 	
-	@Query("select f from FileFolder f where f.userId = :userId")	
-	Page<FileFolder> findAllByUser(@Param("userId") Integer userId, Pageable pageable);
+	@Query("select f from Folder f where f.userId = :userId")	
+	Page<Folder> findAllByUser(@Param("userId") Integer userId, Pageable pageable);
 }
