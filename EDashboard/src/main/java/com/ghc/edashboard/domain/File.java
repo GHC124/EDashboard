@@ -2,9 +2,12 @@ package com.ghc.edashboard.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -27,7 +30,10 @@ public class File {
 	private LocalDateTime dateUp;
 	private String description;
 	private String downloadUrl;
-
+	private Integer folderId;
+	
+	private Folder folder;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -71,16 +77,16 @@ public class File {
 		this.dateUp = dateUp;
 	}
 
-	@Column(name="description")
+	@Column(name = "description")
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}	
+	}
 
-	@Column(name="download_url")
+	@Column(name = "download_url")
 	public String getDownloadUrl() {
 		return downloadUrl;
 	}
@@ -89,14 +95,36 @@ public class File {
 		this.downloadUrl = downloadUrl;
 	}
 
+	@NotNull(message = "{validation.NotNull}")
+	@Column(name = "folder_id")
+	public Integer getFolderId() {
+		return folderId;
+	}
+
+	public void setFolderId(Integer folderId) {
+		this.folderId = folderId;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="folder_id", insertable = false, updatable = false)
+	public Folder getFolder(){
+		return folder;
+	}
+	
+	public void setFolder(Folder folder) {
+		this.folder = folder;
+	}
+
 	@javax.persistence.Transient
 	public String getDateUpString() {
 		String dateUpString = "";
 		if (dateUp != null) {
-			String dateFormatPattern = GlobalVariables.getInstance().getDateFormatPattern();
-			DateTimeFormatter dtfOut = DateTimeFormat.forPattern(dateFormatPattern);
+			String dateFormatPattern = GlobalVariables.getInstance()
+					.getDateFormatPattern();
+			DateTimeFormatter dtfOut = DateTimeFormat
+					.forPattern(dateFormatPattern);
 			dateUpString = dtfOut.print(dateUp);
-			
+
 		}
 		return dateUpString;
 	}

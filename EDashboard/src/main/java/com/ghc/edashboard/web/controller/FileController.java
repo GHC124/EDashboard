@@ -54,14 +54,14 @@ public class FileController extends AbstractController {
 		file.setDateUp(new LocalDateTime());
 		modelAndView.addObject("file", file);
 
-		Folder fileFolder = new Folder();
-		fileFolder.setUserId(getUserId());
-		modelAndView.addObject("fileFolder", fileFolder);
+		Folder folder = new Folder();
+		folder.setUserId(getUserId());
+		modelAndView.addObject("folder", folder);
 
 		return modelAndView;
 	}
 
-	@RequestMapping(params = "createFile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/createFile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ValidationResponse createFile(
 			@ModelAttribute(value = "file") @Valid File file,
@@ -107,10 +107,10 @@ public class FileController extends AbstractController {
 		return res;
 	}
 	
-	@RequestMapping(params = "createFolder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/createFolder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ValidationResponse createFolder(Model model,
-			@ModelAttribute(value = "fileFolder") @Valid Folder fileFolder,
+			@ModelAttribute(value = "folder") @Valid Folder folder,
 			BindingResult result) {
 		ValidationResponse res = new ValidationResponse();
 		if (result.hasErrors()) {
@@ -122,8 +122,8 @@ public class FileController extends AbstractController {
 			}
 		} else {
 			// Reassign user id
-			fileFolder.setUserId(getUserId());
-			Folder saveEntity = folderService.save(fileFolder);
+			folder.setUserId(getUserId());
+			Folder saveEntity = folderService.save(folder);
 			res.setStatus(ValidationResponse.SUCCESS);
 			res.setExtraData(saveEntity.getId().toString());
 		}
@@ -152,15 +152,23 @@ public class FileController extends AbstractController {
 		return dataGrid;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/files", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DataGrid<File> getFileList(
 			@RequestParam(value = "folderId", required = true) Integer folderId,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
-			@RequestParam(value = "sord", required = false) String order) {
-		
-		return null;
+			@RequestParam(value = "sord", required = false) String order) {		
+		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
+				order);
+		Page<File> dataPage = fileService.findAllByFolder(folderId, pageRequest);
+		DataGrid<File> dataGrid = new DataGrid<>();
+		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
+		dataGrid.setTotalPages(dataPage.getTotalPages());
+		dataGrid.setTotalRecords(dataPage.getTotalElements());
+		dataGrid.setData(dataPage.getContent());
+
+		return dataGrid;
 	}
 }

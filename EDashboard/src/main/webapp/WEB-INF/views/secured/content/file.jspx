@@ -49,7 +49,7 @@
 	</div>
 	<div id="newFolderDialog" title="${labelFolderNew}" class="dialog add-dialog folder-dialog" style="display: none">
     	<span id="newFolderError" class="error" style="display: none">${messageSaveFail}</span>
-    	<html:form formUrl="${showFileUrl}" modelAttribute="fileFolder" id="folderNewForm" method="POST">
+    	<html:form formUrl="${showFileUrl}" modelAttribute="folder" id="folderNewForm" method="POST">
     		<html:inputField label="${labelFolderName}" name="name" require="true"/>
     		<html:inputField label="${labelFolderDescription}" name="description"/>     		
     		<form:hidden path="userId" />    		    		
@@ -81,7 +81,8 @@
     		<html:inputField label="${labelFileDescription}" name="description"/>     		
     		<html:fileField label="${labelFileDownloadUrl}" name="downloadUrl"/>
     		<form:hidden path="size" />
-    		<form:hidden path="dateUp" />    		    		    		
+    		<form:hidden path="dateUp" />
+    		<form:hidden path="folderId" />    	    		    		    		
     	</html:uploadForm> 	
 	</div>
 	<script type="text/javascript">
@@ -126,7 +127,7 @@
 			    }
 			  });	    	
 				$("#listFile").jqGrid({ 
-				  url:'${showFileUrl}', 
+				  url:'${showFileUrl}/files', 
 				  datatype: 'local', 
 				  mtype: 'GET', 
 				  colNames:['${labelFileName}', '${labelFileDescription}', '${labelFileSize}', '${labelFileDateUp}'], 
@@ -167,7 +168,7 @@
 			          resizable: false,
 			          buttons:{
 			        		'${labelActionSave}':function(){
-			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}?createFolder', function(){
+			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}/createFolder', function(){
 				            		refreshJQGrid("#listFolder", {page : 1});
 				            		fadeInAndOut($('#spanNewFolder'), 1000, 10000);
 				            		$("#newFolderDialog").dialog("close");	
@@ -192,7 +193,7 @@
 			        		'${labelActionSave}':function(){
 			        			var folder = $(this).data('folderId');
 			        			var replaceData = {folderId: folder};
-			        			fileAjaxSubmit('#fileNewForm', '${showFileUrl}?createFile', function(){
+			        			fileAjaxSubmit('#fileNewForm', '${showFileUrl}/createFile', function(){
 				            		refreshJQGrid("#listFile", {page : 1});
 				            		fadeInAndOut($('#spanNewFile'), 1000, 10000);
 				            		$("#newFileDialog").dialog("close");	

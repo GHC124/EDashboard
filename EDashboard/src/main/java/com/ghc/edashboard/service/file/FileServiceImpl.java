@@ -1,6 +1,8 @@
 package com.ghc.edashboard.service.file;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,5 +19,10 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public File save(File file) {
 		return fileRepository.save(file);
+	}
+
+	@Override
+	public Page<File> findAllByFolder(Integer folderId, PageRequest pageRequest) {
+		return fileRepository.findAllByFolder(folderId, pageRequest);
 	}
 }

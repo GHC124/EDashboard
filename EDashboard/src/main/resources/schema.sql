@@ -35,23 +35,18 @@ CREATE TABLE `edashboard`.`folder` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-CREATE TABLE `file` (
+CREATE TABLE IF NOT EXISTS `file` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `size` bigint(20) NOT NULL,
   `dateup` datetime NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `download_url` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-    
-CREATE TABLE `file_folder` (
-  `file_id` int(10) unsigned NOT NULL,
   `folder_id` int(10) unsigned NOT NULL,
-  KEY `folder_fk` (`folder_id`),
-  KEY `file_fk` (`file_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-ALTER TABLE `file_folder`
-  ADD CONSTRAINT `file_folder_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `file_folder_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
+  PRIMARY KEY (`id`),
+  KEY `folder_id` (`folder_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+ALTER TABLE `file`
+  ADD CONSTRAINT `file_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
+
  
