@@ -72,3 +72,4 @@ div.title-action .float-left{float:left; margin: 10px;}
 div.title-action .float-right{float:right; margin-top: 5px;}
 
 div.profile input[type="text"]{width: 200px;}
+div.profile .picture{width: 150px; height: 150px;}

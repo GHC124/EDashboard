@@ -100,13 +100,8 @@
     		<html:inputField label="${labelFileDescription}" name="description"/>     		
     		<html:fileField label="${labelFileDownloadUrl}" name="downloadUrl"/>
     		<form:hidden path="size" />
-<<<<<<< HEAD
-    		<form:hidden path="dateUp" />    		    		    		
-    		<form:hidden path="folderId" />
-=======
     		<form:hidden path="dateUp" />
-    		<form:hidden path="folderId" />    	    		    		    		
->>>>>>> 8e586e72615158a291a5e0f11b35b03f62cf0bf3
+    		<form:hidden path="folderId" />    	    	
     	</html:uploadForm> 	
 	</div>
 	<script type="text/javascript">
@@ -145,7 +140,7 @@
 			    	//clearJQGridData($('#listFile'), {page : 1});
 		        },
 			    onSelectRow: function(id){ 
-			    	globalSelectedGroupId = id;
+			    	globalSelectedFolderId = id;
 			    	enableInput($('#btnNewFile'));
 			    	refreshJQGrid('#listFile', { page: 1, postData: {folderId:id}, datatype: "json" });
 			    },
@@ -201,8 +196,8 @@
 			          resizable: false,
 			          buttons:{
 			        		'${labelActionSave}':function(){
-			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}?createFolder', function(){
-			        				globalSelectedGroupId = -1;
+			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}/createFolder', function(){
+			        				globalSelectedFolderId = -1;
 				            		refreshJQGrid("#listFolder", {page : 1});
 				            		fadeInAndOut($('#spanNewFolder'), 1000, 10000);
 				            		$("#newFolderDialog").dialog("close");	

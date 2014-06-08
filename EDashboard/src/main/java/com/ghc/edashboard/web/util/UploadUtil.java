@@ -1,5 +1,6 @@
 package com.ghc.edashboard.web.util;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,13 +72,25 @@ public class UploadUtil {
 		// Create folder path
 		createUploadFolder(fullFolderPath);
 		
-		OutputStream outputStream = new FileOutputStream(fullFilePath);
-		IOUtils.copy(inputStream, outputStream);
-		outputStream.flush();
-		outputStream.close();
-		inputStream.close();
+		try(OutputStream outputStream = new FileOutputStream(fullFilePath)){
+			IOUtils.copy(inputStream, outputStream);
+		}
 
 		return filePath;
+	}
+	
+	public static byte[] getFile(String rootDirectory, String fileUrl)
+			throws IOException {
+		String filePath = String.format("%s\\%s", rootDirectory, fileUrl);
+		Path path = Paths.get(filePath);
+		if (Files.exists(path)) {
+			try(InputStream inputStream = new FileInputStream(filePath)){
+				byte[] data = IOUtils.toByteArray(inputStream);
+				return data;
+			}
+		}
+
+		return null;
 	}
 
 	public static void deleteFile(String rootDirectory, String downloadUrl) throws IOException {

@@ -27,10 +27,17 @@
 				<spring:message code="label.content.profile.firstname" var="labelFirstName"/>
 				<spring:message code="label.content.profile.lastname" var="labelLastName"/>
 				<spring:message code="label.content.profile.introduction" var="labelIntroduction"/>
+				<spring:url value="/secured/content/profile" var="showProfileUrl"/>
+								
+				<div>
+					<img alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}" />
+					<a href=""><spring:message code="label.action.edit"/></a>
+				</div>
 				
 				<html:inputField label="${labelFirstName}" name="firstName" require="true"></html:inputField>
 				<html:inputField label="${labelLastName}" name="lastName" require="true"></html:inputField>
-				<html:areaField label="${labelIntroduction}" name="introduction"></html:areaField>				
+				<html:areaField label="${labelIntroduction}" name="introduction"></html:areaField>		
+				<form:hidden path="iconId"/>		
 			</div>
 			<div id="tabs-2">
 				<spring:message code="label.content.profile.email" var="labelEmail"/>

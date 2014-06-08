@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 02, 2014 at 04:48 PM
+-- Generation Time: Jun 08, 2014 at 06:28 AM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `edashboard`
@@ -33,42 +27,21 @@ CREATE TABLE IF NOT EXISTS `file` (
   `dateup` datetime NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `download_url` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `folder_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `folder_id` (`folder_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `file`
 --
 
-INSERT INTO `file` (`id`, `name`, `size`, `dateup`, `description`, `download_url`) VALUES
-(1, 'text', 500, '2014-06-01 00:00:00', 'text description', NULL),
-(2, 'ebook', 700, '2014-06-01 00:00:00', 'ebook description', NULL),
-(3, 'Avatar', 11147, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635143402.jpg'),
-(4, 'Avatar1', 5953, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635565295.jpg'),
-(5, 'Avatar2', 11147, '2014-06-02 00:00:00', '', '2014\\5\\file_1401715199598.jpg');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `file_folder`
---
-
-CREATE TABLE IF NOT EXISTS `file_folder` (
-  `file_id` int(10) unsigned NOT NULL,
-  `folder_id` int(10) unsigned NOT NULL,
-  KEY `folder_fk` (`folder_id`),
-  KEY `file_fk` (`file_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `file_folder`
---
-
-INSERT INTO `file_folder` (`file_id`, `folder_id`) VALUES
-(1, 1),
-(2, 2),
-(3, 1),
-(3, 4);
+INSERT INTO `file` (`id`, `name`, `size`, `dateup`, `description`, `download_url`, `folder_id`) VALUES
+(1, 'text', 500, '2014-06-01 00:00:00', 'text description', NULL, 2),
+(2, 'ebook', 700, '2014-06-01 00:00:00', 'ebook description', NULL, 1),
+(3, 'Avatar', 11147, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635143402.jpg', 2),
+(4, 'Avatar1', 5953, '2014-06-01 00:00:00', '', '2014\\5\\file_1401635565295.jpg', 2),
+(5, 'Avatar2', 11147, '2014-06-02 00:00:00', '', '2014\\5\\file_1401715199598.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -154,11 +127,10 @@ INSERT INTO `user` (`id`, `username`, `password`, `authority`, `is_active`) VALU
 --
 
 --
--- Constraints for table `file_folder`
+-- Constraints for table `file`
 --
-ALTER TABLE `file_folder`
-  ADD CONSTRAINT `file_folder_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `file_folder_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
+ALTER TABLE `file`
+  ADD CONSTRAINT `file_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `folder`
@@ -171,7 +143,3 @@ ALTER TABLE `folder`
 --
 ALTER TABLE `profile`
   ADD CONSTRAINT `profile_user_fk` FOREIGN KEY (`id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -7,20 +7,21 @@ CREATE TABLE `user` (
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `edashboard`.`profile` (
-  `id` INT UNSIGNED NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `first_name` VARCHAR(255) NOT NULL,
-  `last_name` VARCHAR(255) NOT NULL,
-  `icon_id` INT NULL,
-  `introduction` TEXT NULL,
+CREATE TABLE IF NOT EXISTS `profile` (
+  `id` int(10) unsigned NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `icon_id` int(10) unsigned DEFAULT NULL,
+  `introduction` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
-  CONSTRAINT `profile_user_fk`
-    FOREIGN KEY (`id`)
-    REFERENCES `edashboard`.`users` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION);
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  KEY `icon_id` (`icon_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+ALTER TABLE `profile`
+  ADD CONSTRAINT `profile_ibfk_1` FOREIGN KEY (`icon_id`) REFERENCES `file` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `profile_user_fk` FOREIGN KEY (`id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
     
 CREATE TABLE `edashboard`.`folder` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
