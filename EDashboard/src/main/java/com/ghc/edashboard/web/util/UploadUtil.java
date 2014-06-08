@@ -79,4 +79,12 @@ public class UploadUtil {
 
 		return filePath;
 	}
+
+	public static void deleteFile(String rootDirectory, String downloadUrl) throws IOException {
+		String filePath = String.format("%s\\%s", rootDirectory, downloadUrl);
+		Path path = Paths.get(filePath);
+		if (Files.exists(path)) {
+			Files.delete(path);
+		}
+	}
 }

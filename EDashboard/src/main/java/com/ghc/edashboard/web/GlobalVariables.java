@@ -29,14 +29,13 @@ public class GlobalVariables {
 		return INSTANCE;
 	}
 
-	public void init(MessageSource messageSource) {
+	public void init(MessageSource messageSource, String uploadDirectory) {
 		GlobalVariables globalVariables = getInstance();
 
 		// Load global variables
 		globalVariables.dateFormatPattern = messageSource.getMessage(
 				"application.date_format_pattern", new Object[] {}, Locale.US);
-		globalVariables.uploadRootDirectory = messageSource.getMessage(
-				"application.upload_root_directory", new Object[] {}, Locale.US);
+		globalVariables.uploadRootDirectory = uploadDirectory;
 	}
 
 	public String getDateFormatPattern() {

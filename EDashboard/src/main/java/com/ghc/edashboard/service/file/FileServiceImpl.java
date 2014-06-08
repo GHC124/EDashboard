@@ -1,8 +1,10 @@
 package com.ghc.edashboard.service.file;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,17 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public Page<File> findAllByFolder(Integer folderId, PageRequest pageRequest) {
-		return fileRepository.findAllByFolder(folderId, pageRequest);
+	public Page<File> findAllByFolder(Integer folderId, Pageable pageable) {
+		return fileRepository.findAllByFolder(folderId, pageable);
+	}
+
+	@Override
+	public List<File> findAllByFolder(Integer folderId) {
+		return fileRepository.findAllByFolder(folderId);
+	}
+
+	@Override
+	public File findById(Integer fileId) {
+		return fileRepository.findOne(fileId);
 	}
 }

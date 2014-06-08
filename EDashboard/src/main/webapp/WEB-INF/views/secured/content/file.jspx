@@ -8,6 +8,9 @@
 	class="file">
 	<jsp:output omit-xml-declaration="yes" />
 	
+	<spring:message code="label.actions" var="labelActions"/>
+	<spring:message code="label.action.edit" var="labelActionEdit"/>
+	<spring:message code="label.action.delete" var="labelActionDelete"/>
 	<spring:message code="label.content.file.folder.new" var="labelFolderNew"/>
 	<spring:message code="label.content.file.folder.name" var="labelFolderName"/>
 	<spring:message code="label.content.file.folder.description" var="labelFolderDescription"/>
@@ -20,6 +23,8 @@
 	<spring:message code="label.action.save" var="labelActionSave"/>
 	<spring:message code="label.action.close" var="labelActionClose"/>
 	<spring:message code="message.save.fail" var="messageSaveFail"/>
+	<spring:message code="message.delete" var="messageDelete"/>
+	<spring:message code="message.delete.fail" var="messageDeleteError"/>
 	<spring:url value="/secured/content/file" var="showFileUrl"/>	
 	
 	<h1>
@@ -55,6 +60,20 @@
     		<form:hidden path="userId" />    		    		
     	</html:form>    	
 	</div>
+	<div id="editFolderDialog" title="${labelActionEdit}" class="dialog edit-dialog folder-dialog" style="display: none">
+    	<html:form formUrl="" modelAttribute="folder" id="folderEditForm" method="POST">
+    		<html:inputField label="${labelFolderName}" name="name" require="true"/>    	
+    		<html:inputField label="${labelFolderDescription}" name="description"/>     			
+    		<form:hidden path="userId" />    		    		
+    	</html:form>
+    	<br/>
+    	<span id="editFolderError" class="error" style="display: none"></span>    	
+	</div>		
+	<div id="deleteFolderDialog" title="${labelActionDelete}" class="dialog delete-dialog" style="display: none">   
+		<span id="deleteFolderMessage">${messageDelete}</span> 	  
+		<br/>
+		<span id="deleteFolderError" class="error" style="display: none"></span>	
+	</div>
 	<div>
 		<div class="title-action">
 			<h3 class="float-left">
@@ -81,22 +100,28 @@
     		<html:inputField label="${labelFileDescription}" name="description"/>     		
     		<html:fileField label="${labelFileDownloadUrl}" name="downloadUrl"/>
     		<form:hidden path="size" />
+<<<<<<< HEAD
+    		<form:hidden path="dateUp" />    		    		    		
+    		<form:hidden path="folderId" />
+=======
     		<form:hidden path="dateUp" />
     		<form:hidden path="folderId" />    	    		    		    		
+>>>>>>> 8e586e72615158a291a5e0f11b35b03f62cf0bf3
     	</html:uploadForm> 	
 	</div>
 	<script type="text/javascript">
     	<![CDATA[
-    	var refreshUserList = false;
+		var globalSelectedFolderId = -1;            
     	$(function(){       
 	    	$("#listFolder").jqGrid({ 
 			    url:'${showFileUrl}/folders', 
 			    datatype: 'json', 
 			    mtype: 'GET', 
-			    colNames:['${labelFolderName}', '${labelFolderDescription}'], 
+			    colNames:['${labelFolderName}', '${labelFolderDescription}', '${labelActions}'], 
 			    colModel :[  
 			      {name:'name', index:'name', width:150},
-			      {name:'description', index:'description', sortable:false, width:150}
+			      {name:'description', index:'description', sortable:false, width:150},
+			      {name:'act', index:'act', sortable:false, width:25}
 			    ], 
 			    jsonReader : { 
 			        root:"data", 
@@ -119,15 +144,23 @@
 			    	disableInput($('#btnNewFile'));
 			    	//clearJQGridData($('#listFile'), {page : 1});
 		        },
-			    onSelectRow: function(id){  
+			    onSelectRow: function(id){ 
+			    	globalSelectedGroupId = id;
 			    	enableInput($('#btnNewFile'));
 			    	refreshJQGrid('#listFile', { page: 1, postData: {folderId:id}, datatype: "json" });
 			    },
-			    loadComplete: function() {			    	
+			    loadComplete: function() {	
+			    	var grid = $(this);
+		            addAction2JQGrid(grid,'name','act','${labelActionEdit}','ui-icon-pencil',function(id, value){
+		            	showEditFolderDialog(id, value);
+	       			});                
+			        addAction2JQGrid(grid,'name','act','${labelActionDelete}','ui-icon-trash',function(id, value){
+		        		showDeleteFolderDialog(id, value);
+		    		});	
 			    }
 			  });	    	
 				$("#listFile").jqGrid({ 
-				  url:'${showFileUrl}/files', 
+				  url:'${showFileUrl}/listFile', 
 				  datatype: 'local', 
 				  mtype: 'GET', 
 				  colNames:['${labelFileName}', '${labelFileDescription}', '${labelFileSize}', '${labelFileDateUp}'], 
@@ -168,7 +201,8 @@
 			          resizable: false,
 			          buttons:{
 			        		'${labelActionSave}':function(){
-			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}/createFolder', function(){
+			        			formAjaxSubmit('#folderNewForm', '${showFileUrl}?createFolder', function(){
+			        				globalSelectedGroupId = -1;
 				            		refreshJQGrid("#listFolder", {page : 1});
 				            		fadeInAndOut($('#spanNewFolder'), 1000, 10000);
 				            		$("#newFolderDialog").dialog("close");	
@@ -208,6 +242,50 @@
 			        		}  
 			          }
 		        });
+				$( "#editFolderDialog" ).dialog({
+			          autoOpen: false,
+			          height: 350,
+			          width: 400,
+			          modal: true,
+			          resizable: false,
+			          buttons: {
+			            "${labelActionEdit}": function() {
+			            	var id = $(this).data('id');
+			            	formAjaxSubmit("#folderEditForm","${showFileUrl}/editFolder?folderId=" + id, function(){
+			            		refreshJQGrid("#listFolder");
+			            		$("#editFolderDialog").dialog("close");
+			            	}, null, null, function(){
+			            		removeInputError('#editFolderDialog');
+			              		addInputError('#editFolderDialog #div_name','${messageSaveFail}');
+			              	});
+			            }	            
+			          }
+			        });
+			      $( "#deleteFolderDialog" ).dialog({
+			          autoOpen: false,
+			          height: 350,
+			          width: 400,
+			          modal: true,
+			          resizable: false,
+			          buttons: {
+			            "${labelActionDelete}": function() {
+			            	var id = $(this).data('id');
+			            	var data = {};
+			            	postAjaxRequest('${showFileUrl}/deleteFolder?folderId=' + id, data, null, function(){
+			            		deleteJQGridRow($('#listFolder'), id);
+			            		if(id == globalSelectedFolderId){
+			            			globalSelectedFolderId = -1;
+			            			clearJQGridData($('#listFile'));
+			            		}
+			            		$("#deleteFolderDialog").dialog("close");
+			            	},function(){
+			            		var error = $("#deleteFolderDialog").find("#deleteFolderError");
+			            		error.css({"display": "block"});
+			            		error.html('${messageDeleteError}');
+			            	});	            		
+			            }	            
+			          }
+			        });
     		});
 	    	function showNewFileDialog(){
 	    		var folderId = getJQGridSelectedRow($('#listFolder'));;
@@ -226,6 +304,25 @@
 		    	dialog.find("#newFolderError").css({"display": "none"});
 		        dialog.dialog("open");		        
 		    }	 
+	    	function showEditFolderDialog(id, value){
+	 	    	removeInputError("#folderEditForm");
+	 	    	getAjaxRequest('${showFileUrl}/getFolder?folderId=' + id, {}, function(response) {
+	     			populateFormData('#folderEditForm', response);
+	     		}, null, function(){
+    				var error = $("#editFolderError");
+	         		error.css({"display": "block"});
+	         		error.find('span').html('${messageGetFolderFail}');
+	         	});
+	 	    	var dialog = $("#editFolderDialog");	        
+	 	        dialog.data('id',id).dialog("open");
+	 	    }
+	 	    function showDeleteFolderDialog(id, value){
+	 	    	var dialog = $("#deleteFolderDialog");
+	 	    	var message = '${messageDelete}' + ' ' + value + "?";
+	 	    	dialog.find("#deleteFolderMessage").html(message);
+	 	    	dialog.find("#deleteFolderError").css({"display": "none"});
+	 	        dialog.data('id',id).dialog("open");	        
+	 	    }
     	]]>
         </script>
 </div>

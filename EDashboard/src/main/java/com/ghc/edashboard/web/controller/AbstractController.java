@@ -9,6 +9,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -23,6 +24,8 @@ public abstract class AbstractController {
 	private MessageSource messageSource;
 	
 	private String dateFormatPattern;
+	
+	@Value("${application.upload_root_directory}")
 	private String uploadRootDirectory;
 		
 	@InitBinder
@@ -33,9 +36,8 @@ public abstract class AbstractController {
 	@PostConstruct
 	public void init() {
 		GlobalVariables globalVariables = GlobalVariables.getInstance();
-		globalVariables.init(messageSource);
+		globalVariables.init(messageSource, uploadRootDirectory);
 		dateFormatPattern = globalVariables.getDateFormatPattern();		
-		uploadRootDirectory = globalVariables.getUploadRootDirectory();
 	}
 
 	protected String getMessage(String code, Locale locale){

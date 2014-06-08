@@ -9,4 +9,8 @@ public interface FolderService {
 	Page<Folder> findAllByUser(Integer userId, Pageable pageable);
 
 	Folder save(Folder fileFolder);
+
+	void delete(Integer folderId);
+
+	Folder findById(Integer folderId);
 }

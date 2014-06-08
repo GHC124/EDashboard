@@ -1,15 +1,10 @@
 package com.ghc.edashboard.domain;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,9 +18,7 @@ public class Folder {
 	private String name;
 	private String description;
 	private Integer userId;	
-		
-	private Set<File> files = new HashSet<File>(0);
-	
+			
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -66,15 +59,5 @@ public class Folder {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="folder")
-	public Set<File> getFiles(){
-		return files;
-	}
-
-	public void setFiles(Set<File> files) {
-		this.files = files;
-	}
-	
+	}	
 }

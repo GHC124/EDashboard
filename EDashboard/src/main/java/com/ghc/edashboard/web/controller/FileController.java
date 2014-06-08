@@ -50,6 +50,7 @@ public class FileController extends AbstractController {
 		ModelAndView modelAndView = new ModelAndView("file");
 
 		File file = new File();
+		file.setFolderId(0);
 		file.setSize(0l);
 		file.setDateUp(new LocalDateTime());
 		modelAndView.addObject("file", file);
@@ -130,6 +131,44 @@ public class FileController extends AbstractController {
 
 		return res;
 	}
+	
+	@RequestMapping(value = "/getFolder", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Folder getFolder(@RequestParam(value = "folderId", required = true) Integer folderId) {
+		Folder folder = folderService.findById(folderId);
+
+		return folder;
+	}
+	
+	@RequestMapping(value = "/getFile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public File getFile(@RequestParam(value = "fileId", required = true) Integer fileId) {
+		File file = fileService.findById(fileId);
+
+		return file;
+	}
+	
+	@RequestMapping(value = "/editFolder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ValidationResponse editFolder(Model model,
+			@ModelAttribute(value = "folder") @Valid Folder folder,
+			BindingResult result, @RequestParam(value = "folderId", required = true) Integer folderId) {
+		ValidationResponse res = new ValidationResponse();
+		if (result.hasErrors()) {
+			res.setStatus(ValidationResponse.FAIL);
+			List<FieldError> allErrors = result.getFieldErrors();
+			for (FieldError objectError : allErrors) {
+				res.addErrorMessage(new ErrorMessage(objectError.getField(),
+						objectError.getDefaultMessage()));
+			}
+		} else {
+			res.setStatus(ValidationResponse.SUCCESS);
+			folder.setId(folderId);
+			folderService.save(folder);
+		}
+
+		return res;
+	}
 
 	@RequestMapping(value = "/folders", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -143,32 +182,51 @@ public class FileController extends AbstractController {
 		Integer userId = getUserId();
 		Page<Folder> dataPage = folderService.findAllByUser(userId,
 				pageRequest);
-		DataGrid<Folder> dataGrid = new DataGrid<>();
-		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
-		dataGrid.setTotalPages(dataPage.getTotalPages());
-		dataGrid.setTotalRecords(dataPage.getTotalElements());
-		dataGrid.setData(dataPage.getContent());
+		DataGrid<Folder> dataGrid = JpaUtil.getDataGrid(dataPage);
 
 		return dataGrid;
 	}
 
-	@RequestMapping(value="/files", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value= "/listFile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DataGrid<File> getFileList(
 			@RequestParam(value = "folderId", required = true) Integer folderId,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
-			@RequestParam(value = "sord", required = false) String order) {		
+			@RequestParam(value = "sord", required = false) String order) {
 		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
-				order);
+				order);		
 		Page<File> dataPage = fileService.findAllByFolder(folderId, pageRequest);
-		DataGrid<File> dataGrid = new DataGrid<>();
-		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
-		dataGrid.setTotalPages(dataPage.getTotalPages());
-		dataGrid.setTotalRecords(dataPage.getTotalElements());
-		dataGrid.setData(dataPage.getContent());
+		DataGrid<File> dataGrid =JpaUtil.getDataGrid(dataPage);
 
 		return dataGrid;
+	}
+	
+	@RequestMapping(value = "/deleteFolder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void deleteFolder(@RequestParam(value="folderId", required = true) Integer folderId, Locale locale) {
+		ValidationResponse res = new ValidationResponse();
+		res.setStatus(ValidationResponse.SUCCESS);
+		
+		List<File> files = fileService.findAllByFolder(folderId);
+		boolean errorDelete = false;
+		for (File file : files) {
+			String downloadUrl = file.getDownloadUrl();
+			// remove file
+			try {
+				UploadUtil.deleteFile(getUploadRootDirectory(), downloadUrl);
+			} catch (IOException e) {
+				e.printStackTrace();
+				errorDelete = true;
+			}
+		}
+		if(errorDelete){
+			res.setStatus(ValidationResponse.FAIL);
+			res.addErrorMessage(new ErrorMessage("deleteFolderError",
+					getMessage("message.delete.fail", locale)));
+		}
+		
+		folderService.delete(folderId);
 	}
 }

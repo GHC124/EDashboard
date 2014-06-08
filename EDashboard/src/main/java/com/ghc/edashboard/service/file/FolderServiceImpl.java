@@ -27,4 +27,14 @@ public class FolderServiceImpl implements FolderService {
 		return folderRepository.save(fileFolder);
 	}
 
+	@Override
+	public void delete(Integer folderId) {
+		folderRepository.delete(folderId);
+	}
+
+	@Override
+	public Folder findById(Integer folderId) {
+		return folderRepository.findOne(folderId);
+	}
+
 }

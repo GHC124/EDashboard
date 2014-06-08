@@ -11,15 +11,27 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
+import com.ghc.edashboard.web.form.DataGrid;
+
 /**
  * 
  */
 public class JpaUtil {
+	
+	public static <T> DataGrid<T> getDataGrid(Page<T> dataPage){
+		DataGrid<T> dataGrid = new DataGrid<>();
+		dataGrid.setCurrentPage(dataPage.getNumber() + 1);
+		dataGrid.setTotalPages(dataPage.getTotalPages());
+		dataGrid.setTotalRecords(dataPage.getTotalElements());
+		dataGrid.setData(dataPage.getContent());
+		return dataGrid;
+	}
 	
 	public static PageRequest getPageRequest(Integer page, Integer rows, String sortBy, String order){
 		Sort sort = null;
