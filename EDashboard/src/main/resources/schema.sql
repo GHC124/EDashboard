@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `file` (
   `dateup` datetime NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `download_url` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `content_type` VARCHAR( 255 ) NULL DEFAULT NULL,
   `folder_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `folder_id` (`folder_id`)

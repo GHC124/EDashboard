@@ -27,6 +27,9 @@ public abstract class AbstractController {
 	
 	@Value("${application.upload_root_directory}")
 	private String uploadRootDirectory;
+	
+	@Value("${application.content_type.image}")
+	private String contentTypeImage;
 		
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -54,6 +57,10 @@ public abstract class AbstractController {
 	
 	protected String getUploadRootDirectory() {
 		return uploadRootDirectory;
+	}		
+
+	protected String getContentTypeImage() {
+		return contentTypeImage;
 	}
 
 	protected Integer getUserId(){

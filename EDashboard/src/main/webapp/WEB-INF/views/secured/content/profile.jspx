@@ -31,7 +31,7 @@
 								
 				<div>
 					<img alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}" />
-					<a href=""><spring:message code="label.action.edit"/></a>
+					<a href="javascript:showChooseFileDialog();"><spring:message code="label.action.edit"/></a>
 				</div>
 				
 				<html:inputField label="${labelFirstName}" name="firstName" require="true"></html:inputField>
@@ -47,6 +47,9 @@
 		</div>
 		<button type="submit"><spring:message code="label.action.save"/></button>
 	</html:form>
+	<!-- Choose file dialog -->
+	<html:chooseFile/>
+	<html:script url="/public/resources/scripts/chooseFile.js"></html:script>
 	<!-- CKEditor -->
 	<html:script url="/public/resources/ckeditor/ckeditor.js"></html:script>
 	<html:script url="/public/resources/ckeditor/adapters/jquery.js"></html:script>
@@ -58,5 +61,10 @@
                 uiColor : '#CCCCCC'
             });
 		});
+		function showChooseFileDialog(){	  
+			var dialog = $("#chooseFileDialog");
+	    	dialog.dialog("open");
+	    	refreshJQGrid('#listFolder', { page: 1, datatype: "json" });
+	    }	 
 	</script>
 </div>

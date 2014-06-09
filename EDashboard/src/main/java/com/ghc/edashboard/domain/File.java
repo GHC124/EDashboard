@@ -27,6 +27,7 @@ public class File {
 	private LocalDateTime dateUp;
 	private String description;
 	private String downloadUrl;
+	private String contentType;
 	private Integer folderId;  	
 	
 	@Id
@@ -90,6 +91,15 @@ public class File {
 		this.downloadUrl = downloadUrl;
 	}
 	
+	@Column(name="content_type")	
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
 	@NotNull(message = "{validation.NotNull}")
 	@Column(name="folder_id")	
 	public Integer getFolderId() {

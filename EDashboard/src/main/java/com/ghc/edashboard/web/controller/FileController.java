@@ -87,6 +87,7 @@ public class FileController extends AbstractController {
 			MultipartFile mpf = request.getFile(itr.next());
 			try {
 				String originalName = mpf.getOriginalFilename();
+				String contentType = mpf.getContentType();
 				long size = mpf.getSize();
 				if (UploadUtil.isValidFile(originalName)) {
 					String rootDirectory = getUploadRootDirectory();
@@ -94,6 +95,7 @@ public class FileController extends AbstractController {
 							originalName, mpf.getInputStream());
 					file.setDownloadUrl(downloadUrl);
 					file.setSize(size);
+					file.setContentType(contentType);
 					fileService.save(file);
 					res.setStatus(ValidationResponse.SUCCESS);
 				} else {

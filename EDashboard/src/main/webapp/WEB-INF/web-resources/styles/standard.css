@@ -2,6 +2,7 @@ body{font-family: Arial, Helvetica, sans-serif;font-size: 13px;margin: 0px;}
 table{width: 100%;}
 h1, h2, h3{color: #1E6297;}
 input{padding: 4px;}
+input[type="file"]{width:220px;}
 
 #wrap{margin: auto;width: 1024px;}
 #wrap div.left-content{width: 75%; float: left;}
