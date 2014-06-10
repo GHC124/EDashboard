@@ -30,7 +30,7 @@
 				<spring:url value="/secured/content/profile" var="showProfileUrl"/>
 								
 				<div>
-					<img alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}" />
+					<img alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}"></img>
 					<a href="javascript:showChooseFileDialog();"><spring:message code="label.action.edit"/></a>
 				</div>
 				
@@ -48,7 +48,18 @@
 		<button type="submit"><spring:message code="label.action.save"/></button>
 	</html:form>
 	<!-- Choose file dialog -->
-	<html:chooseFile/>
+	<spring:message code="label.actions" var="labelActions"/>
+	<spring:message code="label.action.choose" var="labelActionChoose"/>
+	<spring:message code="label.content.file.folder.name" var="labelFolderName"/>
+	<spring:message code="label.content.file.folder.description" var="labelFolderDescription"/>
+	<spring:message code="label.content.file.name" var="labelFileName"/>
+	<spring:message code="label.content.file.description" var="labelFileDescription"/>
+	<spring:message code="label.content.file.size" var="labelFileSize"/>
+	<spring:message code="label.content.file.date_up" var="labelFileDateUp"/>
+	<spring:message code="label.action.save" var="labelActionSave"/>
+	<spring:message code="label.action.close" var="labelActionClose"/>
+	<spring:url value="/secured/content/file" var="showFileUrl"/>
+	<html:chooseFile/>	
 	<html:script url="/public/resources/scripts/chooseFile.js"></html:script>
 	<!-- CKEditor -->
 	<html:script url="/public/resources/ckeditor/ckeditor.js"></html:script>
@@ -61,10 +72,6 @@
                 uiColor : '#CCCCCC'
             });
 		});
-		function showChooseFileDialog(){	  
-			var dialog = $("#chooseFileDialog");
-	    	dialog.dialog("open");
-	    	refreshJQGrid('#listFolder', { page: 1, datatype: "json" });
-	    }	 
+		 
 	</script>
 </div>
