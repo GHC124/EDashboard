@@ -14,5 +14,7 @@ public interface FileService {
 	
 	Page<File> findAllByFolder(Integer folderId, Pageable pageable);
 
+	Page<File> findAllByFolderAndContentType(Integer folderId, String[] contentType,  Pageable pageable);
+	
 	File findById(Integer fileId);
 }

@@ -37,4 +37,10 @@ public class FileServiceImpl implements FileService {
 	public File findById(Integer fileId) {
 		return fileRepository.findOne(fileId);
 	}
+
+	@Override
+	public Page<File> findAllByFolderAndContentType(Integer folderId,
+			String[] contentType, Pageable pageable) {
+		return fileRepository.findAllByFolderAndContentType(folderId, contentType, pageable);
+	}
 }

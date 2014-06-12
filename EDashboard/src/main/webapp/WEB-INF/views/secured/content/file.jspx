@@ -109,7 +109,7 @@
 		var globalSelectedFolderId = -1;            
     	$(function(){       
 	    	$("#listFolder").jqGrid({ 
-			    url:'${showFileUrl}/folders', 
+			    url:'${showFileUrl}/listFolder', 
 			    datatype: 'json', 
 			    mtype: 'GET', 
 			    colNames:['${labelFolderName}', '${labelFolderDescription}', '${labelActions}'], 

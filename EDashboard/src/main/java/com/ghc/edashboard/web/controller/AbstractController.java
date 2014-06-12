@@ -63,12 +63,25 @@ public abstract class AbstractController {
 		return contentTypeImage;
 	}
 
+	protected String[] getArrayContentType(String contentType) {
+		String types[] = new String[]{};
+		switch(contentType){
+		case "image":
+			if(StringUtils.hasText(contentTypeImage)){
+				types = contentTypeImage.split(";");
+			}
+			break;
+		}		
+		
+		return types;
+	}
+	
 	protected Integer getUserId(){
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
 				.getContext().getAuthentication().getPrincipal();
 		return userDetails.getUserId();
 	}
-		
+			
 	private class DateTimeEditor extends PropertyEditorSupport {
 
 		@Override

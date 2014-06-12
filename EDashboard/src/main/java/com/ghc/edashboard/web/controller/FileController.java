@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -172,7 +173,7 @@ public class FileController extends AbstractController {
 		return res;
 	}
 
-	@RequestMapping(value = "/folders", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/listFolder", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public DataGrid<Folder> getFolderList(
 			@RequestParam(value = "page", required = false) Integer page,
@@ -193,13 +194,20 @@ public class FileController extends AbstractController {
 	@ResponseBody
 	public DataGrid<File> getFileList(
 			@RequestParam(value = "folderId", required = true) Integer folderId,
+			@RequestParam(value = "contentType", required = false) String contentType,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "sidx", required = false) String sortBy,
 			@RequestParam(value = "sord", required = false) String order) {
 		PageRequest pageRequest = JpaUtil.getPageRequest(page, rows, sortBy,
 				order);		
-		Page<File> dataPage = fileService.findAllByFolder(folderId, pageRequest);
+		Page<File> dataPage = null;
+		if(StringUtils.hasText(contentType)){
+			String[] types = getArrayContentType(contentType);
+			dataPage = fileService.findAllByFolderAndContentType(folderId, types, pageRequest);
+		}else{
+			dataPage = fileService.findAllByFolder(folderId, pageRequest);
+		}
 		DataGrid<File> dataGrid =JpaUtil.getDataGrid(dataPage);
 
 		return dataGrid;
