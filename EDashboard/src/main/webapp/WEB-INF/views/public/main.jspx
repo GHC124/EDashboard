@@ -6,9 +6,6 @@
 	xmlns:joda="http://www.joda.org/joda/time/tags"
 	xmlns:html="urn:jsptagdir:/WEB-INF/tags/html"
 	xmlns:ajax="urn:jsptagdir:/WEB-INF/tags/ajax">
-	<jsp:output omit-xml-declaration="yes" />		
-	<sec:authorize access="isAuthenticated()">
-		<jsp:forward page="/secured/dashboard" /> 
-	</sec:authorize>
+	<jsp:output omit-xml-declaration="yes" />	
 	<span>Main</span>
 </div>

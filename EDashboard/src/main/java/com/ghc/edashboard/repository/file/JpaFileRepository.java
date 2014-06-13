@@ -20,5 +20,5 @@ public interface JpaFileRepository extends
 	Page<File> findAllByFolder(@Param("folderId") Integer folderId, Pageable pageable);
 	
 	@Query("select f from File f where f.folderId = :folderId and f.contentType IN :contentType")	
-	Page<File> findAllByFolderAndContentType(@Param("folderId") Integer folderId, @Param("contentType") String[] contentType,  Pageable pageable);
+	Page<File> findAllByFolderAndContentType(@Param("folderId") Integer folderId, @Param("contentType") List<String> contentType,  Pageable pageable);
 }

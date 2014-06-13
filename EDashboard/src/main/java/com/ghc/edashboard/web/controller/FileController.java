@@ -92,7 +92,7 @@ public class FileController extends AbstractController {
 				long size = mpf.getSize();
 				if (UploadUtil.isValidFile(originalName)) {
 					String rootDirectory = getUploadRootDirectory();
-					String downloadUrl = UploadUtil.saveFile(rootDirectory,
+					String downloadUrl = UploadUtil.saveFile(getUsername(), rootDirectory,
 							originalName, mpf.getInputStream());
 					file.setDownloadUrl(downloadUrl);
 					file.setSize(size);
@@ -203,7 +203,7 @@ public class FileController extends AbstractController {
 				order);		
 		Page<File> dataPage = null;
 		if(StringUtils.hasText(contentType)){
-			String[] types = getArrayContentType(contentType);
+			List<String> types = getListContentType(contentType);
 			dataPage = fileService.findAllByFolderAndContentType(folderId, types, pageRequest);
 		}else{
 			dataPage = fileService.findAllByFolder(folderId, pageRequest);

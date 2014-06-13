@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -83,5 +84,12 @@ public class ProfileController extends AbstractController {
 				"message.save.success", locale)));
 
 		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/updateIcon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void updateIcon(@RequestParam(value = "iconId", required = true) Integer iconId) {
+		Integer userId = getUserId();
+		profileService.updateIcon(iconId, userId);
 	}
 }

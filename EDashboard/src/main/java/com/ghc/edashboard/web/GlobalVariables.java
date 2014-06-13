@@ -1,8 +1,12 @@
 package com.ghc.edashboard.web;
 
-import java.util.Locale;
+import java.io.IOException;
+import java.util.Properties;
 
-import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+
+import com.ghc.edashboard.util.LogUtil;
 
 /**
  * Global Variables for entire application
@@ -13,9 +17,12 @@ public class GlobalVariables {
 
 	private String dateFormatPattern;
 	private String uploadRootDirectory;
+	private String contentTypeImage;
 	
 	private GlobalVariables() {
-		dateFormatPattern = "";
+		dateFormatPattern="";
+		uploadRootDirectory="";
+		contentTypeImage="";
 	}
 
 	public static GlobalVariables getInstance() {
@@ -29,13 +36,17 @@ public class GlobalVariables {
 		return INSTANCE;
 	}
 
-	public void init(MessageSource messageSource, String uploadDirectory) {
+	public void init() {
 		GlobalVariables globalVariables = getInstance();
-
-		// Load global variables
-		globalVariables.dateFormatPattern = messageSource.getMessage(
-				"application.date_format_pattern", new Object[] {}, Locale.US);
-		globalVariables.uploadRootDirectory = uploadDirectory;
+		// Load properties
+		try {
+			Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("database.properties"));
+			globalVariables.dateFormatPattern = properties.getProperty("application.date_format_pattern");
+			globalVariables.uploadRootDirectory = properties.getProperty("application.upload_root_directory");
+			globalVariables.contentTypeImage = properties.getProperty("application.content_type.image");			
+		} catch (IOException e) {
+			LogUtil.error(e);
+		}
 	}
 
 	public String getDateFormatPattern() {
@@ -45,4 +56,8 @@ public class GlobalVariables {
 	public String getUploadRootDirectory() {
 		return uploadRootDirectory;
 	}
+
+	public String getContentTypeImage() {
+		return contentTypeImage;
+	}	
 }

@@ -8,6 +8,8 @@
 	class="profile">
 	<jsp:output omit-xml-declaration="yes" />
 
+	<spring:url value="/secured/content/profile" var="showProfileUrl"/>
+
 	<h1>
 		<spring:message code="label.content.profile" />
 	</h1>
@@ -26,8 +28,7 @@
 			<div id="tabs-1">
 				<spring:message code="label.content.profile.firstname" var="labelFirstName"/>
 				<spring:message code="label.content.profile.lastname" var="labelLastName"/>
-				<spring:message code="label.content.profile.introduction" var="labelIntroduction"/>
-				<spring:url value="/secured/content/profile" var="showProfileUrl"/>
+				<spring:message code="label.content.profile.introduction" var="labelIntroduction"/>				
 								
 				<div>
 					<img alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}"></img>
@@ -58,11 +59,13 @@
 	<spring:message code="label.content.file.description" var="labelFileDescription"/>
 	<spring:message code="label.content.file.size" var="labelFileSize"/>
 	<spring:message code="label.content.file.date_up" var="labelFileDateUp"/>
+	<spring:message code="message.choose.simgle" var="messageChooseSimple"/>
+	<spring:message code="message.choose.mutil" var="messageChooseMutil"/>
 	<spring:message code="label.action.save" var="labelActionSave"/>
 	<spring:message code="label.action.close" var="labelActionClose"/>
 	<spring:url value="/secured/content/file" var="showFileUrl"/>
 	<html:chooseFile dialogId="chooseFileDialog" listFileId="listFile" pagerFileId="pagerFile" 
-		pagerFolderId="pagerFolder" listFolderId="listFolder" title="${labelActionChoose}" 
+		pagerFolderId="pagerFolder" messageId="messageId" listFolderId="listFolder" title="${labelActionChoose}" 
 		titleFile="${labelFile}" titleFolder="${labelFolder}"></html:chooseFile>
 	<html:script url="/public/resources/scripts/chooseFile.js"></html:script>
 	<!-- CKEditor -->
@@ -85,11 +88,20 @@
 			var baseData=['${labelActions}','${labelActionSave}','${labelActionClose}'];
 			var folderData=['${showFileUrl}/listFolder','${labelFolderName}','${labelFolderDescription}'];
 			var fileData=['${showFileUrl}/listFile?contentType=image','${labelFileName}','${labelFileDescription}','${labelFileSize}','${labelFileDateUp}'];
-			cFileDialog.initAllData(idData, baseData, folderData, fileData);
+			var lengthData=[1,1,'messageId','${messageChooseSimple}'];
+			cFileDialog.initAllData(idData, baseData, folderData, fileData, lengthData);
 			cFileDialog.initStructure();
+			cFileDialog.addListener('saveClick', function(data){
+				log(data);
+				postAjaxRequest('${showProfileUrl}/updateIcon?iconId='+data[0], {}, null, function(){
+					log('ok');
+				}, function(){
+					log('error');
+				});
+			});		
 		} 
-		function showChooseFileDialog(){
-			cFileDialog.show();
+		function showChooseFileDialog(){			
+			cFileDialog.show(cFileDialog.CHOOSE_MODE_SINGLE);
 		}
 	</script>
 </div>

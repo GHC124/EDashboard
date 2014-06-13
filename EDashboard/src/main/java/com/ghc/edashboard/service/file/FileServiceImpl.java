@@ -40,7 +40,7 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public Page<File> findAllByFolderAndContentType(Integer folderId,
-			String[] contentType, Pageable pageable) {
+			List<String> contentType, Pageable pageable) {
 		return fileRepository.findAllByFolderAndContentType(folderId, contentType, pageable);
 	}
 }

@@ -9,8 +9,17 @@ function log(message){
 	}
 }
 
+// Splice data={}
 function spliceArray(data, id){
 	delete data[id];
+}
+
+// Unset data=[]
+function unsetArray(data, id){
+	var index = data.indexOf(id);
+	if (index > -1) {
+	    data.splice(index, 1);
+	}
 }
 
 function cancelDefaultAction(e) {
@@ -318,6 +327,33 @@ function addAction2JQGrid(grid, valueCol, actionCol, title, icon, action){
               ).css({"margin-left": "5px", float:"left"})
                .addClass("ui-pg-div ui-inline-custom")
                .append('<span class="ui-icon '+ icon +'"></span>');
+             $(this).append(div);
+    });
+}
+
+function addCheckbox2JQGrid(grid, valueCol, actionCol, title, preId, action){
+	var iCol = getJQGridColumnIndexByName(grid, actionCol) + 1;
+	var vCol = getJQGridColumnIndexByName(grid, valueCol) + 1;
+	if(iCol == -1 || vCol == -1){
+		return;
+	}
+    grid.children("tbody")
+        .children("tr.jqgrow")
+        .children("td:nth-child("+iCol+")")
+        .each(function() {
+        	var id = $(this).closest("tr.jqgrow").attr("id"); 
+        	var div = 
+        	$("<input></input>",
+                {
+        			id: preId + id,
+        			type: 'checkbox',
+                    title: title,
+                    click: function(e) {
+                    	action(id, this);
+                        //return cancelDefaultAction(e);
+                    }
+                }
+              ).css({"margin-left": "5px", float:"left"});
              $(this).append(div);
     });
 }

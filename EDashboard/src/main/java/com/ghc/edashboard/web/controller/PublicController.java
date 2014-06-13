@@ -6,8 +6,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value="/public")
-public class MainController extends AbstractController {
-	
+public class PublicController extends AbstractController {
+		
 	@RequestMapping(value="/main")
 	public ModelAndView mainPage(){
 		ModelAndView modelAndView = new ModelAndView();

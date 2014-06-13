@@ -5,19 +5,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ghc.edashboard.domain.Profile;
-import com.ghc.edashboard.repository.profile.ProfileRepository;
+import com.ghc.edashboard.repository.profile.JpaProfileRepository;
 
 @Service
 @Transactional
 public class ProfileServiceImpl implements ProfileService {
 
 	@Autowired
-	private ProfileRepository profileRepository;
+	private JpaProfileRepository profileRepository;
 
 	@Transactional(readOnly = true)
 	@Override
 	public Profile findById(Integer id) {
-		return profileRepository.findById(id);
+		return profileRepository.findOne(id);
 	}
 
 	@Override
@@ -25,4 +25,8 @@ public class ProfileServiceImpl implements ProfileService {
 		return profileRepository.save(profile);
 	}
 
+	@Override
+	public void updateIcon(Integer iconId, Integer id) {
+		profileRepository.updateIcon(iconId, id);
+	}
 }

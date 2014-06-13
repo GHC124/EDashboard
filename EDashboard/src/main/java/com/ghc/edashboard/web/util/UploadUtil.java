@@ -12,6 +12,8 @@ import java.util.Calendar;
 
 import org.apache.commons.io.IOUtils;
 
+import com.ghc.edashboard.util.LogUtil;
+
 public class UploadUtil {
 	private static final long KILOBYTES = 1024;
 	private static final long MEGABYTES = (KILOBYTES * 1024);
@@ -58,17 +60,19 @@ public class UploadUtil {
 		return "";
 	}
 
-	public static String saveFile(String rootDirectory, String originalName,
+	public static String saveFile(String username, String rootDirectory, String originalName,
 			InputStream inputStream) throws IOException {
 		Calendar calendar = Calendar.getInstance();
-		String fileName = String.format("file_%s.%s",
+		String fileName = String.format("%s_file_%s.%s", username,
 				calendar.getTimeInMillis(), getFileExt(originalName));
 		// Format: root\year\month\file_name.ext
-		String folderPath = String.format("%s\\%s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
+		String folderPath = String.format("%s\\%s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1);
 		String fullFolderPath = String.format("%s\\%s", rootDirectory, folderPath);
 		String filePath = String.format("%s\\%s", folderPath, fileName);
 		String fullFilePath = String.format("%s\\%s", fullFolderPath, fileName);		
 
+		LogUtil.error("%s %s %s %s", folderPath, fullFolderPath, filePath, fullFilePath);
+		
 		// Create folder path
 		createUploadFolder(fullFolderPath);
 		
