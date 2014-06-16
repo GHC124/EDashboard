@@ -4,6 +4,8 @@ h1, h2, h3{color: #1E6297;}
 input{padding: 4px;}
 input[type="file"]{width:220px;}
 
+.link-action{color: #1E6297 !important; text-decoration: underline !important;}
+
 #wrap{margin: auto;width: 1024px;}
 #wrap div.left-content{width: 75%; float: left;}
 #wrap div.right-content{width: 24%; float: left; margin-left: 5px;}
@@ -73,4 +75,7 @@ div.title-action .float-left{float:left; margin: 10px;}
 div.title-action .float-right{float:right; margin-top: 5px;}
 
 div.profile input[type="text"]{width: 200px;}
-div.profile .picture{width: 150px; height: 150px;}
+div.profile .picture{width: 150px;height: 150px;}
+
+div.file-select{font-size: 12px;margin-top: 15px !important; color: #1E6297;}
+div.file-message{font-size: 12px;margin-top: 15px !important;}

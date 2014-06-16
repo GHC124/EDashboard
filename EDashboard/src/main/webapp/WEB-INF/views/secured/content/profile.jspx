@@ -31,8 +31,8 @@
 				<spring:message code="label.content.profile.introduction" var="labelIntroduction"/>				
 								
 				<div>
-					<img alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}"></img>
-					<a href="javascript:showChooseFileDialog();"><spring:message code="label.action.edit"/></a>
+					<img id="imgProfileIcon" alt="picture" class="picture" src="${showProfileUrl}/picture?iconId=${profile.iconId}"></img>
+					<a href="javascript:showChooseFileDialog(${profile.iconId});" class="link-action" style="margin-left: 10px; vertical-align: top;"><spring:message code="label.action.edit"/></a>
 				</div>
 				
 				<html:inputField label="${labelFirstName}" name="firstName" require="true"></html:inputField>
@@ -59,32 +59,37 @@
 	<spring:message code="label.content.file.description" var="labelFileDescription"/>
 	<spring:message code="label.content.file.size" var="labelFileSize"/>
 	<spring:message code="label.content.file.date_up" var="labelFileDateUp"/>
+	<spring:message code="label.content.file.selected" var="labelFileSelected"/>
+	<spring:message code="label.content.file.deselected" var="labelFileDeselected"/>
 	<spring:message code="message.choose.simgle" var="messageChooseSimple"/>
 	<spring:message code="message.choose.mutil" var="messageChooseMutil"/>
 	<spring:message code="label.action.save" var="labelActionSave"/>
 	<spring:message code="label.action.close" var="labelActionClose"/>
 	<spring:url value="/secured/content/file" var="showFileUrl"/>
 	<html:chooseFile dialogId="chooseFileDialog" listFileId="listFile" pagerFileId="pagerFile" 
-		pagerFolderId="pagerFolder" messageId="messageId" listFolderId="listFolder" title="${labelActionChoose}" 
-		titleFile="${labelFile}" titleFolder="${labelFolder}"></html:chooseFile>
+		pagerFolderId="pagerFolder" messageId="messageId" listFolderId="listFolder"
+		selectMessageId="selectMessage" deselectId="deselect"
+		title="${labelActionChoose}" titleFile="${labelFile}" titleFolder="${labelFolder}" 
+		titleSelect="${labelFileSelected}" titleDeselectAll="${labelFileDeselected}"></html:chooseFile>
 	<html:script url="/public/resources/scripts/chooseFile.js"></html:script>
 	<!-- CKEditor -->
 	<html:script url="/public/resources/ckeditor/ckeditor.js"></html:script>
 	<html:script url="/public/resources/ckeditor/adapters/jquery.js"></html:script>
 	<script type="text/javascript">
 		var cFileDialog;
+		var firstRun = true;
 		$(function() {
 			$("#tabs").tabs();
 			CKEDITOR.replace( 'introduction', {
                 toolbar : 'Basic',
                 uiColor : '#CCCCCC'
-            });
-			createChooseFileDialog();
-			
+            });						
 		});
-		function createChooseFileDialog(){
-			cFileDialog = new chooseFileDialog();
-			var idData=['chooseFileDialog','listFolder','pagerFolder','listFile','pagerFile'];
+		function showChooseFileDialog(iconId){
+			if(firstRun){
+				cFileDialog = new chooseFileDialog();
+			}
+			var idData=['chooseFileDialog','listFolder','pagerFolder','listFile','pagerFile','selectMessage','deselect'];
 			var baseData=['${labelActions}','${labelActionSave}','${labelActionClose}'];
 			var folderData=['${showFileUrl}/listFolder','${labelFolderName}','${labelFolderDescription}'];
 			var fileData=['${showFileUrl}/listFile?contentType=image','${labelFileName}','${labelFileDescription}','${labelFileSize}','${labelFileDateUp}'];
@@ -92,15 +97,18 @@
 			cFileDialog.initAllData(idData, baseData, folderData, fileData, lengthData);
 			cFileDialog.initStructure();
 			cFileDialog.addListener('saveClick', function(data){
-				log(data);
 				postAjaxRequest('${showProfileUrl}/updateIcon?iconId='+data[0], {}, null, function(){
-					log('ok');
+					var src = '${showProfileUrl}/picture?iconId=' + data[0];
+					var img = $('#imgProfileIcon');
+					img.attr("src", src);
 				}, function(){
 					log('error');
 				});
 			});		
-		} 
-		function showChooseFileDialog(){			
+			if(firstRun){
+				firstRun = false;
+				cFileDialog.setSelectedItems([iconId]);
+			}
 			cFileDialog.show(cFileDialog.CHOOSE_MODE_SINGLE);
 		}
 	</script>

@@ -1,12 +1,20 @@
 function chooseFileDialog(){
 	this.CHOOSE_MODE_SINGLE='single';
 	this.CHOOSE_MODE_MUTILPLY='mutilply';
-	
+		
 	this.globalSelectedFolderId=-1;
+	
+	// Min and Max items that can select
 	this.minimunItem=0;
 	this.maximunItem=0;
+	
+	// Choose mode
 	this.chooseMode='';
+	
+	// Items that selected
 	this.selectedItems=[];
+	
+	// Call back functions
 	this.callbacks = {};	
 	
 	this.listFolderUrl='';
@@ -25,15 +33,23 @@ function chooseFileDialog(){
 	this.pagerFolderId='';
 	this.pagerFileId='';
 	this.dialogId='';
+	
+	// Message area
 	this.messageId='';
 	this.messageLengthItem='';
 	
-	this.initId = function(cDialogId,lFolderId,pFolderId,lFileId,pFileId){
+	// Select files area	
+	this.selectMessageId='';
+	this.deselectId='';
+	
+	this.initId = function(cDialogId,lFolderId,pFolderId,lFileId,pFileId,sMessageId,sDeselectId){
 		this.listFolderId=lFolderId;
 		this.listFileId=lFileId;
 		this.pagerFolderId=pFolderId;
 		this.pagerFileId=pFileId;
-		this.dialogId=cDialogId;
+		this.dialogId=cDialogId;		
+		this.selectMessageId=sMessageId;
+		this.deselectId=sDeselectId;
 	};
 	this.initBase = function(lActions,lActionSave,lActionClose){
 		this.labelActions=lActions;
@@ -59,7 +75,7 @@ function chooseFileDialog(){
 		this.messageLengthItem=mLengthItem;
 	};
 	this.initAllData = function(idData,baseData,folderData,fileData,lengthData){
-		this.initId(idData[0], idData[1], idData[2], idData[3], idData[4]);
+		this.initId(idData[0], idData[1], idData[2], idData[3], idData[4], idData[5], idData[6]);
 		this.initBase(baseData[0], baseData[1], baseData[2]);
 		this.initFolderData(folderData[0], folderData[1], folderData[2]);
 		this.initFileData(fileData[0], fileData[1], fileData[2], fileData[3], fileData[4]);
@@ -85,8 +101,8 @@ function chooseFileDialog(){
 		        id: "id" 
 		    },       
 		    pager: '#' + current.pagerFolderId, 
-		    rowNum:5, 
-		    rowList:[5,10,20,30,50], 
+		    rowNum:10, 
+		    rowList:[10,20,30,50], 
 		    sortname: 'name', 
 		    sortorder: 'asc', 
 		    viewrecords: true, 
@@ -125,10 +141,10 @@ function chooseFileDialog(){
 		      id: "id" 
 		  },       
 		  pager: '#' + current.pagerFileId, 
-		  rowNum:5, 
-		  rowList:[5,10,20,30,50], 
-		  sortname: 'name', 
-		  sortorder: 'asc', 
+		  rowNum:10, 
+		  rowList:[10,20,30,50], 
+		  sortname: 'dateUp', 
+		  sortorder: 'desc', 
 		  viewrecords: true, 
 		  gridview: true, 
 		  height: 250, 
@@ -141,6 +157,7 @@ function chooseFileDialog(){
 				addCheckbox2JQGrid(grid,'name','act','choose', current.listFileId + '_checkbox_',function(id, input){
 					current.filterCheckbox(grid, id, input);
 				});  
+				log("data " + current.selectedItems.length);
 				current.populateSelectedCheckbox(grid);
 		  }
 		});		
@@ -177,6 +194,7 @@ function chooseFileDialog(){
 	};
 	this.populateSelectedCheckbox = function(grid){
 		var current = this;
+		log("data1 " + current.selectedItems.length);
 		$(current.selectedItems).each(function(i){
 			var checkbox = $(grid).find("#" + current.listFileId + "_checkbox_" + current.selectedItems[i]);
 			if(checkbox){
@@ -184,11 +202,33 @@ function chooseFileDialog(){
 			}
 		});		
 	};
+	this.updateSelectArea = function(grid){
+		var current = this;
+		var length = current.selectedItems.length;
+		var select = $('#' + current.selectMessageId);
+		var deselect = $('#' + current.deselectId);
+		if(length > 0){
+			select.html(length);			
+			deselect.css({"display": "inline-block"});
+			deselect.click(function(){
+				select.html(0);
+				current.selectedItems.length = 0;
+				var checkboxs = $(grid).find("input[id^='" + current.listFileId + "_checkbox_']");
+				checkboxs.each(function(){
+					$(this).prop('checked', false);					  
+				});
+				current.executeCallback("deselectClick");	   
+			});
+		}else{
+			select.html(0);
+			deselect.css({"display": "none;"});
+		}
+	};
 	this.filterCheckbox = function(grid, id, input){
 		  var checkbox = $(grid).find('#' + this.listFileId + '_checkbox_' + id);
 		  var checked = checkbox.prop('checked');
 		  if(this.chooseMode == this.CHOOSE_MODE_SINGLE){
-			  this.selectedItems=[];
+			  this.selectedItems.length = 0;
 			  var checkboxs = $(grid).find("input[id^='" + this.listFileId + "_checkbox_']");
 			  checkboxs.each(function(){
 				  $(this).prop('checked', false);					  
@@ -210,7 +250,17 @@ function chooseFileDialog(){
 				  this.selectedItems.push(id);
 				  checkbox.prop('checked', true);
 			  }
-		  }		  
+		  }
+		  this.updateSelectArea(grid);
+	};
+	this.setSelectedItems = function(data){
+		this.selectedItems.length = 0;
+		this.selectedItems = copyArray(data);		
+		log("data2 " + this.selectedItems.length);
+		this.updateSelectArea($('#' + this.listFileId));
+	};
+	this.getSelectedItems = function(){
+		return this.selectedItems;
 	};
 	this.show = function(cMode){
 		if(cMode){

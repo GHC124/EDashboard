@@ -22,6 +22,10 @@ function unsetArray(data, id){
 	}
 }
 
+function copyArray(a){
+	return a.slice();
+}
+
 function cancelDefaultAction(e) {
 	 var evt = e ? e:window.event;
 	 if (evt.preventDefault) evt.preventDefault();
