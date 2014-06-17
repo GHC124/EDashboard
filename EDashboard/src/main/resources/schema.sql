@@ -1,5 +1,5 @@
 CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `authority` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `profile` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE `edashboard`.`folder` (
     ON UPDATE NO ACTION);
 
 CREATE TABLE IF NOT EXISTS `file` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `size` bigint(20) NOT NULL,
   `dateup` datetime NOT NULL,
@@ -51,4 +51,27 @@ CREATE TABLE IF NOT EXISTS `file` (
 ALTER TABLE `file`
   ADD CONSTRAINT `file_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE;
 
+CREATE TABLE `edashboard`.`competency` (
+  `id` INT(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `evaluator` VARCHAR(255) NULL,
+  `level` INT(3) NOT NULL,
+  `type` INT(1) NOT NULL,
+  `competency_group_id` INT unsigned NOT NULL,
+PRIMARY KEY (`id`));
+ALTER TABLE  `competency` ADD FOREIGN KEY (  `competency_group_id` ) REFERENCES  `edashboard`.`competency_group` (
+`id`
+) ON DELETE CASCADE ON UPDATE RESTRICT ;
+
+CREATE TABLE `edashboard`.`competency_group` (
+  `id` INT(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `type` INT(1) NULL,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`id`));
+ALTER TABLE  `competency_group` ADD FOREIGN KEY (  `user_id` ) REFERENCES  `edashboard`.`user` (
+`id`
+) ON DELETE CASCADE ON UPDATE RESTRICT ;
  

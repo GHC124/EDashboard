@@ -157,7 +157,6 @@ function chooseFileDialog(){
 				addCheckbox2JQGrid(grid,'name','act','choose', current.listFileId + '_checkbox_',function(id, input){
 					current.filterCheckbox(grid, id, input);
 				});  
-				log("data " + current.selectedItems.length);
 				current.populateSelectedCheckbox(grid);
 		  }
 		});		
@@ -179,7 +178,7 @@ function chooseFileDialog(){
 	                			var messageDiv = $('#' + current.messageId); 
 	                			messageDiv.addClass('error');
 	                			messageDiv.html(current.messageLengthItem);
-	                			fadeInAndOut(messageDiv, 1000, 10000);
+	                			$('#' + this.messageId).css({"display":"inline-block"}); 
 	                		}
 	                	}
 	                },
@@ -194,7 +193,6 @@ function chooseFileDialog(){
 	};
 	this.populateSelectedCheckbox = function(grid){
 		var current = this;
-		log("data1 " + current.selectedItems.length);
 		$(current.selectedItems).each(function(i){
 			var checkbox = $(grid).find("#" + current.listFileId + "_checkbox_" + current.selectedItems[i]);
 			if(checkbox){
@@ -217,11 +215,24 @@ function chooseFileDialog(){
 				checkboxs.each(function(){
 					$(this).prop('checked', false);					  
 				});
+				current.updateMessage(grid);
 				current.executeCallback("deselectClick");	   
 			});
 		}else{
 			select.html(0);
 			deselect.css({"display": "none;"});
+		}
+	};
+	this.updateMessage = function(grid){
+		var current = this;
+		var length = current.selectedItems.length;
+		if(length < current.minimunItem || length > current.maximunItem){
+			var messageDiv = $('#' + current.messageId); 
+			messageDiv.addClass('error');
+			messageDiv.html(current.messageLengthItem);
+			$('#' + this.messageId).css({"display":"inline-block"}); 
+		}else{
+			$('#' + this.messageId).css({"display":"none"}); 
 		}
 	};
 	this.filterCheckbox = function(grid, id, input){
@@ -252,16 +263,28 @@ function chooseFileDialog(){
 			  }
 		  }
 		  this.updateSelectArea(grid);
+		  this.updateMessage(grid);
 	};
 	this.setSelectedItems = function(data){
 		this.selectedItems.length = 0;
 		this.selectedItems = copyArray(data);		
-		log("data2 " + this.selectedItems.length);
 		this.updateSelectArea($('#' + this.listFileId));
 	};
 	this.getSelectedItems = function(){
 		return this.selectedItems;
 	};
+	this.addListener = function(functionName, handler) {		
+        if (functionName in  this.callbacks){
+            this.callbacks[functionName].push(handler);
+        }else{
+            this.callbacks[functionName] = [handler];
+        }
+    };
+    this.executeCallback = function(functionName, data){
+    	for (var i=0; functionName in this.callbacks && i<this.callbacks[functionName].length; i++){
+            this.callbacks[functionName][i](data);
+    	}
+    };
 	this.show = function(cMode){
 		if(cMode){
 			if(cMode != this.CHOOSE_MODE_SINGLE && cMode != this.CHOOSE_MODE_MUTILPLY){
@@ -276,19 +299,8 @@ function chooseFileDialog(){
 		this.globalSelectedFolderId = -1;
 		var dialog = $("#" + this.dialogId);
 		dialog.dialog("open");
+		$('#' + this.messageId).css({"display":"none"}); 
 		refreshJQGrid('#' + this.listFolderId, { page: 1, datatype: "json" });
 		clearJQGridData($('#' + this.listFileId));
-	};
-	this.addListener = function(functionName, handler) {		
-        if (functionName in  this.callbacks){
-            this.callbacks[functionName].push(handler);
-        }else{
-            this.callbacks[functionName] = [handler];
-        }
-    };
-    this.executeCallback = function(functionName, data){
-    	for (var i=0; functionName in this.callbacks && i<this.callbacks[functionName].length; i++){
-            this.callbacks[functionName][i](data);
-    	}
-    };
+	};	
 }	

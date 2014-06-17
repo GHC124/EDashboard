@@ -8,4 +8,6 @@ public interface SQLConstants {
 	String SORT = ":sort";
 	String LIMIT = "limit";
 	String OFFSET = "offset";	
+	
+	
 }

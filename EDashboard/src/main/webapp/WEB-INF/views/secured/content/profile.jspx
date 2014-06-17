@@ -77,7 +77,7 @@
 	<html:script url="/public/resources/ckeditor/adapters/jquery.js"></html:script>
 	<script type="text/javascript">
 		var cFileDialog;
-		var firstRun = true;
+		var selectedIcon = -1;
 		$(function() {
 			$("#tabs").tabs();
 			CKEDITOR.replace( 'introduction', {
@@ -86,8 +86,9 @@
             });						
 		});
 		function showChooseFileDialog(iconId){
-			if(firstRun){
+			if(!cFileDialog){
 				cFileDialog = new chooseFileDialog();
+				selectedIcon = iconId;
 			}
 			var idData=['chooseFileDialog','listFolder','pagerFolder','listFile','pagerFile','selectMessage','deselect'];
 			var baseData=['${labelActions}','${labelActionSave}','${labelActionClose}'];
@@ -96,19 +97,23 @@
 			var lengthData=[1,1,'messageId','${messageChooseSimple}'];
 			cFileDialog.initAllData(idData, baseData, folderData, fileData, lengthData);
 			cFileDialog.initStructure();
-			cFileDialog.addListener('saveClick', function(data){
+			cFileDialog.addListener('saveClick', function(data){	
+				if(selectedIcon == data[0]){
+					return;
+				}
 				postAjaxRequest('${showProfileUrl}/updateIcon?iconId='+data[0], {}, null, function(){
+					selectedIcon = data[0];
 					var src = '${showProfileUrl}/picture?iconId=' + data[0];
 					var img = $('#imgProfileIcon');
 					img.attr("src", src);
 				}, function(){
 					log('error');
 				});
-			});		
-			if(firstRun){
-				firstRun = false;
-				cFileDialog.setSelectedItems([iconId]);
-			}
+			});
+			cFileDialog.addListener('deselectClick', function(){
+				
+			});
+			cFileDialog.setSelectedItems([selectedIcon]);
 			cFileDialog.show(cFileDialog.CHOOSE_MODE_SINGLE);
 		}
 	</script>
