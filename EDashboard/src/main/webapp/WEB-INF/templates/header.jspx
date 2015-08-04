@@ -6,6 +6,7 @@
 	<spring:url value="/public/main" var="home" />
 	<spring:url value="/public/about" var="about" />
 	<spring:url value="/public/contact" var="contact" />
+	<spring:url value="/public/karaoke" var="karaoke" />
 	<spring:url value="/secured/dashboard" var="dashboard" />
 	<spring:url value="/secured/content/profile" var="content_profile" />
 	<spring:url value="/secured/content/file" var="content_file" />
@@ -18,6 +19,7 @@
 				<li><a href="${home}" class="nav-item nav-home"><spring:message code="nav.home"/></a></li>
 				<li><a href="${about}" class="nav-item nav-about"><spring:message code="nav.about"/></a></li>
 				<li><a href="${contact}" class="nav-item nav-contact"><spring:message code="nav.contact_us"/></a></li>
+				<li><a href="${karaoke}" class="nav-item nav-karaoke"><spring:message code="nav.karaoke"/></a></li>
 			</ul>
 		</sec:authorize>
 		<sec:authorize access="isAuthenticated()">
@@ -49,6 +51,8 @@
     			nav.find(".nav-about").addClass("active");
     		}else if(currentUrl.indexOf('/contact')>-1){
     			nav.find(".nav-contact").addClass("active");
+    		}else if(currentUrl.indexOf('/karaoke')>-1){
+    			nav.find(".nav-karaoke").addClass("active");
     		}else if(currentUrl.indexOf('/dashboard')>-1){
     			nav.find(".nav-dashboard").addClass("active");
     		}else if(currentUrl.indexOf('/content')>-1){

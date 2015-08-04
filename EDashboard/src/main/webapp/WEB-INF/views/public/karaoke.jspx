@@ -1,0 +1,19 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:html="urn:jsptagdir:/WEB-INF/tags/html"
+	xmlns:ajax="urn:jsptagdir:/WEB-INF/tags/ajax">
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<span>Karaoke</span>
+	
+	<html:form formUrl="" modelAttribute="karaoke" method="POST" id="karaokeForm">		
+		<html:inputField label="Page Url" name="page" require="true"></html:inputField>
+		<html:inputField label="First Page" name="first" require="true"></html:inputField>
+		<html:inputField label="Last Page" name="last" require="true"></html:inputField>
+		<html:areaField label="Data" name="data"></html:areaField>	
+		<button type="submit">Get Json</button>
+	</html:form>
+</div>

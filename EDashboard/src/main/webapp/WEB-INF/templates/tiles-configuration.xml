@@ -19,6 +19,9 @@
     <definition name="contact" extends="fullTemplate">
         <put-attribute name="content" value="/WEB-INF/views/public/contact.jspx"/>
     </definition>
+    <definition name="karaoke" extends="fullTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/public/karaoke.jspx"/>
+    </definition>
     <definition name="login" extends="fullTemplate">
         <put-attribute name="content" value="/WEB-INF/views/public/auth/login.jspx"/>
     </definition>
