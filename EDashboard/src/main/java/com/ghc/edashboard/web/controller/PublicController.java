@@ -73,44 +73,64 @@ public class PublicController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/karaoke", method = RequestMethod.POST)
-	public ModelAndView getKaraoke(
+	public void getKaraoke(
 			@ModelAttribute(value = "karaoke") @Valid Karaoke karaoke,
-			BindingResult result, Locale locale) {
-		ModelAndView modelAndView = new ModelAndView("karaoke");
+			BindingResult result, Locale locale, HttpServletResponse response) throws ServletException, IOException {
+		
+		// Set the response type and specify the boundary string
+		response.setContentType("multipart/x-mixed-replace;boundary=END");
 
-		if (result.hasErrors()) {
-			modelAndView.addObject(new Message(Message.ERROR, getMessage(
-					"message.fail", locale)));
-			modelAndView.addObject("karaoke", karaoke);
+		// Set the content type based on the file type you need to download
+		String contentType = "Content-type: " + MediaType.APPLICATION_JSON_VALUE;
+		ServletOutputStream out = response.getOutputStream();
+		// Print the boundary string
+		out.println();
+		out.println("--END");
+		
+		System.out.println("Download START");
 
-			return modelAndView;
+		String page = karaoke.getPage();
+		int first = karaoke.getFirst();
+		int last = karaoke.getLast();
+		for (int i = first; i <= last; i++) {
+			
+			System.out.println("Downloading ... " + i);
+			
+			KaraokeParser karaokeParser = new KaraokeParser(page, first, last);
+			List<Song> songs = karaokeParser.parseSongs();
+			SongJson songJson = karaokeParser.convertToJson(songs);
+			ObjectWriter ow = new ObjectMapper().writer()
+					.withDefaultPrettyPrinter();
+			String json = "";
+			try {
+				json = ow.writeValueAsString(songJson);
+			} catch (JsonGenerationException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// Print the content type
+			out.println(contentType);
+			out.println("Content-Disposition: attachment; filename=" + String.format("karaoke_%1$d", i));
+			out.println();
+
+			// Write the contents of the file
+			out.write(json.getBytes());
+			
+			// Print the boundary string
+			out.println();
+			out.println("--END");
+			out.flush();
 		}
-
-		KaraokeParser karaokeParser = new KaraokeParser(karaoke.getPage(),
-				karaoke.getFirst(), karaoke.getLast());
-		List<Song> songs = karaokeParser.parseSongs();
-		SongJson songJson = karaokeParser.convertToJson(songs);
-		ObjectWriter ow = new ObjectMapper().writer()
-				.withDefaultPrettyPrinter();
-		String json = "";
-		try {
-			json = ow.writeValueAsString(songJson);
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		karaoke.setData(json);
-
-		modelAndView.addObject("karaoke", karaoke);
-		modelAndView.addObject(new Message(Message.SUCCESS, getMessage(
-				"message.success", locale)));
-
-		return modelAndView;
+		// Print the ending boundary string
+		out.println("--END--");
+		out.flush();
+		out.close();
 	}
-
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -125,6 +145,8 @@ public class PublicController extends AbstractController {
 		out.println();
 		out.println("--END");
 
+		 System.out.println("Download START");
+		
 		String page = "";
 		int first = 0;
 		int last = 0;
@@ -145,28 +167,20 @@ public class PublicController extends AbstractController {
 				e.printStackTrace();
 			}
 
-			BufferedInputStream fif = new BufferedInputStream(fis);
-
 			// Print the content type
 			out.println(contentType);
-			out.println("Content-Disposition: attachment; filename="
-					+ file.getName());
+			out.println("Content-Disposition: attachment; filename=" + String.format("karaoke_%1$d", i));
 			out.println();
 
-			System.out.println("Sending " + file.getName());
-
+			System.out.println("Downloading ... " + i);
+			
 			// Write the contents of the file
-			int data = 0;
-			while ((data = fif.read()) != -1) {
-				out.write(data);
-			}
-			fif.close();
-
+			out.write(json.getBytes());
+			
 			// Print the boundary string
 			out.println();
 			out.println("--END");
 			out.flush();
-			System.out.println("Finisheding file " + file.getName());
 		}
 		// Print the ending boundary string
 		out.println("--END--");
