@@ -3,6 +3,8 @@ package com.ghc.edashboard.web.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,6 +33,13 @@ public class KaraokeParser {
 			
 			List<Song> pageSongs = parseSongs(pageUrl);
 			songs.addAll(pageSongs);
+			
+			// Sleep 1s
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {				
+				e.printStackTrace();
+			}
 		}
 		
 		return songs;
@@ -40,7 +49,8 @@ public class KaraokeParser {
 		List<Song> songs = new ArrayList<Song>();
 		
 		try {
-			Document document = Jsoup.connect(pageUrl).get();
+			// timeout = 1 minute
+			Document document = Jsoup.connect(pageUrl).timeout(60 * 1000).get();
 			Element resultSongDiv = document.getElementById("resultSong");
 			if(resultSongDiv != null){
 				Elements songsDiv = resultSongDiv.getElementsByClass("song");
@@ -51,7 +61,11 @@ public class KaraokeParser {
 						Element songIdDiv = songDiv.getElementsByClass("songID").first();
 						if(songIdDiv != null){
 							songId = songIdDiv.text();
-						}	
+						}
+						if(songId.length() == 0){
+							continue;
+						}
+						
 						// Vol
 						String vol = "";
 						if(songIdDiv != null){
@@ -78,15 +92,15 @@ public class KaraokeParser {
 						if(authorDiv != null){
 							author = authorDiv.text();
 						}
-						
+											
 						Song song = new Song();
-						song.setCode(songId);
+						song.setCode(getCode(songId));
 						song.setVol(vol);
 						song.setTitle(name);
 						song.setLyric(lyric);
 						song.setMusician(author);
 						
-						songs.add(song);
+						songs.add(song);						
 					}
 				}
 			}			
@@ -105,4 +119,13 @@ public class KaraokeParser {
 		
 		return songJson;
 	}	
+	
+	public String getCode(String text){
+		Pattern pattern = Pattern.compile("^\\d+\\S");
+		Matcher matcher = pattern.matcher(text);
+		if(matcher.find()){
+			return matcher.group(0);
+		}
+		return text;
+	}
 }

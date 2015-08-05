@@ -6,6 +6,10 @@ public class Karaoke {
 	int last;	
 	String data;
 	
+	public Karaoke(){
+		page = "http://www.masokaraoke.net/list-karaoke//?page=%1$s";
+	}
+	
 	public String getPage() {
 		return page;
 	}
